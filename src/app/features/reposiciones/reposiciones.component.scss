@@ -39,3 +39,25 @@ tr.selected {
   color: var(--color-text-soft);
   font-size: 0.86rem;
 }
+
+.reposiciones-filtros ::ng-deep .filter-bar {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  align-items: end;
+}
+
+.filtro-item {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.filtro-item input,
+.filtro-item select {
+  height: 48px;
+}
+
+@media (max-width: 720px) {
+  .reposiciones-filtros ::ng-deep .filter-bar {
+    grid-template-columns: 1fr !important;
+  }
+}

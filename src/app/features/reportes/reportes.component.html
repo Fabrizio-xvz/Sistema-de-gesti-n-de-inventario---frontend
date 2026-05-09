@@ -6,12 +6,12 @@
     </div>
   </header>
 
-  <app-search-filter-bar>
-    <label>
+  <app-search-filter-bar class="reportes-filtros">
+    <label class="filtro-item">
       Rango de fechas
       <input [(ngModel)]="rango" type="text" />
     </label>
-    <label>
+    <label class="filtro-item">
       Categoría
       <select [(ngModel)]="categoria">
         <option value="todas">Todas</option>
@@ -20,7 +20,7 @@
         }
       </select>
     </label>
-    <label>
+    <label class="filtro-item">
       Producto
       <select [(ngModel)]="producto">
         <option value="todos">Todos</option>
@@ -29,7 +29,7 @@
         }
       </select>
     </label>
-    <label>
+    <label class="filtro-item">
       Tipo de movimiento
       <select [(ngModel)]="tipo">
         <option value="todos">Todos</option>
@@ -113,3 +113,4 @@
     </table>
   </app-data-table>
 </section>
+

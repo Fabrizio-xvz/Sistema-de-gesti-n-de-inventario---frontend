@@ -9,12 +9,12 @@
     </div>
   </header>
 
-  <app-search-filter-bar>
-    <label>
+  <app-search-filter-bar class="proveedores-filtros">
+    <label class="filtro-item">
       Buscar proveedor
       <input [(ngModel)]="busqueda" placeholder="Buscar proveedor..." type="text" />
     </label>
-    <label>
+    <label class="filtro-item">
       Categoría suministrada
       <select [(ngModel)]="categoria">
         <option value="todas">Todas</option>
@@ -23,7 +23,7 @@
         }
       </select>
     </label>
-    <label>
+    <label class="filtro-item">
       Estado
       <select [(ngModel)]="estado">
         <option value="todos">Todos</option>
@@ -101,3 +101,4 @@
     </section>
   }
 </app-drawer>
+
