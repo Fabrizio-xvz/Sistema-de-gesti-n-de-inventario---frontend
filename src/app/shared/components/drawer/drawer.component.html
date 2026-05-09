@@ -1,0 +1,14 @@
+@if (abierto()) {
+  <div class="drawer-backdrop" (click)="cerrado.emit()"></div>
+  <aside class="drawer">
+    <header class="drawer__header">
+      <div>
+        <h3>{{ titulo() }}</h3>
+      </div>
+      <button type="button" (click)="cerrado.emit()">✕</button>
+    </header>
+    <div class="drawer__content">
+      <ng-content />
+    </div>
+  </aside>
+}

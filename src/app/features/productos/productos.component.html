@@ -1,0 +1,113 @@
+<section class="page-shell">
+  <header class="page-header">
+    <div class="page-title">
+      <h1>Productos</h1>
+      <p>Administra el catálogo de productos, precios, categorías y proveedores.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn" type="button">+ Nuevo producto</button>
+    </div>
+  </header>
+
+  <app-search-filter-bar>
+    <label>
+      Buscar producto
+      <input [(ngModel)]="busqueda" placeholder="Buscar producto..." type="text" />
+    </label>
+    <label>
+      Categoría
+      <select [(ngModel)]="categoria">
+        <option value="todas">Todas</option>
+        @for (item of categorias; track item) {
+          <option [value]="item">{{ item }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      Proveedor
+      <select [(ngModel)]="proveedor">
+        <option value="todos">Todos</option>
+        @for (item of listaProveedores; track item) {
+          <option [value]="item">{{ item }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      Estado
+      <select [(ngModel)]="estado">
+        <option value="todos">Todos</option>
+        <option value="activo">Activo</option>
+        <option value="inactivo">Inactivo</option>
+      </select>
+    </label>
+  </app-search-filter-bar>
+
+  <app-data-table titulo="Catálogo maestro">
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Categoría</th>
+          <th>Presentación</th>
+          <th>Precio venta</th>
+          <th>Proveedor</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (producto of filasFiltradas; track producto.id) {
+          <tr>
+            <td><strong>{{ producto.nombre }}</strong></td>
+            <td>{{ categoriaNombre(producto) }}</td>
+            <td>{{ producto.presentacion }}</td>
+            <td>{{ formatoMoneda(producto.precioVenta) }}</td>
+            <td>{{ proveedorNombre(producto) }}</td>
+            <td><app-status-badge [estado]="producto.estado" /></td>
+            <td>
+              <div class="actions-inline">
+                <button class="table-link" type="button" (click)="abrirDetalle(producto)">Ver detalle</button>
+                <button class="table-link" type="button">Editar</button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </app-data-table>
+</section>
+
+<app-drawer [abierto]="!!productoSeleccionado" [titulo]="'Detalle del producto'" (cerrado)="cerrarDetalle()">
+  @if (productoSeleccionado; as producto) {
+    <section class="drawer-stack">
+      <div class="detail-block">
+        <h4>{{ producto.nombre }}</h4>
+        <app-status-badge [estado]="producto.estado" />
+      </div>
+      <div class="detail-grid">
+        <div><span>Categoría</span><strong>{{ categoriaNombre(producto) }}</strong></div>
+        <div><span>Presentación</span><strong>{{ producto.presentacion }}</strong></div>
+        <div><span>Precio de venta</span><strong>{{ formatoMoneda(producto.precioVenta) }}</strong></div>
+        <div><span>Proveedor</span><strong>{{ proveedorNombre(producto) }}</strong></div>
+      </div>
+      <div class="soft-divider"></div>
+
+      <div class="detail-card">
+        <span>Notas</span>
+        <strong>{{ producto.notas }}</strong>
+      </div>
+
+      @if (resumenInventario(producto); as item) {
+        <div class="soft-divider"></div>
+        <div class="detail-card">
+          <span>Resumen de inventario</span>
+          <strong>Stock actual: {{ item.stockActual }}</strong>
+          <strong>Stock mínimo: {{ item.stockMinimo }}</strong>
+          <a class="inline-link" routerLink="/inventario">Ver en inventario</a>
+        </div>
+      }
+
+      <button class="btn" type="button">Editar producto</button>
+    </section>
+  }
+</app-drawer>

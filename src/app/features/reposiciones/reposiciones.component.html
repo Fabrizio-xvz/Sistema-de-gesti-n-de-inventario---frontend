@@ -1,0 +1,106 @@
+<section class="page-shell">
+  <header class="page-header">
+    <div class="page-title">
+      <h1>Reposiciones</h1>
+      <p>Productos que necesitan compra o reposición.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn" type="button">Registrar entrada</button>
+      <button class="btn-outline" type="button">Exportar lista</button>
+    </div>
+  </header>
+
+  <section class="grid-auto">
+    <app-stat-card color="azul" icono="↺" numero="32" titulo="Por reponer" />
+    <app-stat-card color="rojo" icono="!" numero="8" titulo="Urgentes" />
+    <app-stat-card color="verde" icono="☏" numero="12" titulo="Proveedores relacionados" />
+    <app-stat-card color="amarillo" icono="✓" numero="5" titulo="Revisados hoy" />
+  </section>
+
+  <app-search-filter-bar>
+    <label>
+      Buscar producto
+      <input [(ngModel)]="busqueda" placeholder="Buscar producto..." type="text" />
+    </label>
+    <label>
+      Prioridad
+      <select [(ngModel)]="prioridad">
+        <option value="todas">Todas</option>
+        <option value="urgente">Urgente</option>
+        <option value="pronto">Pronto</option>
+        <option value="planificado">Planificado</option>
+      </select>
+    </label>
+    <label>
+      Proveedor
+      <select [(ngModel)]="proveedor">
+        <option value="todos">Todos</option>
+        @for (item of proveedores; track item) {
+          <option [value]="item">{{ item }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      Categoría
+      <select [(ngModel)]="categoria">
+        <option value="todas">Todas</option>
+        @for (item of categorias; track item) {
+          <option [value]="item">{{ item }}</option>
+        }
+      </select>
+    </label>
+  </app-search-filter-bar>
+
+  <section class="split-layout">
+    <app-data-table titulo="Lista de reposición">
+      <table>
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Stock actual</th>
+            <th>Stock mínimo</th>
+            <th>Cantidad sugerida</th>
+            <th>Proveedor</th>
+            <th>Prioridad</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of itemsFiltrados; track item.productId) {
+            <tr [class.selected]="seleccionada?.productId === item.productId" (click)="seleccionada = item">
+              <td><strong>{{ productoNombre(item) }}</strong></td>
+              <td>{{ item.stockActual }}</td>
+              <td>{{ item.stockMinimo }}</td>
+              <td>{{ item.cantidadSugerida }}</td>
+              <td>{{ proveedorDetalle(item)?.nombre }}</td>
+              <td><app-status-badge [estado]="item.prioridad" /></td>
+              <td>
+                <div class="actions-inline">
+                  <button class="table-link" type="button">Registrar entrada</button>
+                  <button class="table-link" type="button">Marcar revisado</button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </app-data-table>
+
+    <aside class="card surface-pad detail-panel">
+      <h2 class="section-title">Detalle sugerido</h2>
+      @if (seleccionada; as item) {
+        <div class="detail-stack">
+          <div><span>Producto</span><strong>{{ productoNombre(item) }}</strong></div>
+          <div><span>Stock actual</span><strong>{{ item.stockActual }}</strong></div>
+          <div><span>Stock mínimo</span><strong>{{ item.stockMinimo }}</strong></div>
+          <div><span>Cantidad sugerida</span><strong>{{ item.cantidadSugerida }}</strong></div>
+          <div><span>Proveedor</span><strong>{{ proveedorDetalle(item)?.nombre }}</strong></div>
+          <div><span>Teléfono del proveedor</span><strong>{{ proveedorDetalle(item)?.telefono }}</strong></div>
+          <div><span>Última entrada</span><strong>{{ item.ultimaEntrada }}</strong></div>
+          <div><span>Nota</span><strong>{{ item.nota }}</strong></div>
+          <button class="btn" type="button">Registrar entrada</button>
+        </div>
+      }
+    </aside>
+  </section>
+</section>

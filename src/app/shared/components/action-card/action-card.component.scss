@@ -1,0 +1,30 @@
+.action-card {
+  display: grid;
+  gap: 0.9rem;
+  place-items: center;
+  min-height: 150px;
+  padding: 1.2rem;
+  background: var(--color-surface);
+  border: 1px solid rgba(216, 226, 239, 0.7);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  font-weight: 700;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.action-card__icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #dbeafe, #ccfbf1);
+  color: var(--color-primary);
+  font-size: 1.3rem;
+}

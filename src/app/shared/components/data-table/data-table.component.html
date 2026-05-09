@@ -1,0 +1,19 @@
+<section class="card table-card">
+  @if (titulo() || subtitulo()) {
+    <header class="table-card__header">
+      <div>
+        @if (titulo()) {
+          <h3>{{ titulo() }}</h3>
+        }
+        @if (subtitulo()) {
+          <p>{{ subtitulo() }}</p>
+        }
+      </div>
+      <ng-content select="[table-actions]" />
+    </header>
+  }
+
+  <div class="table-scroll">
+    <ng-content />
+  </div>
+</section>

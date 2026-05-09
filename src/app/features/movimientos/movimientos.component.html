@@ -1,0 +1,173 @@
+<section class="page-shell">
+  <header class="page-header">
+    <div class="page-title">
+      <h1>Movimientos</h1>
+      <p>Registra entradas, salidas y ajustes de productos.</p>
+    </div>
+  </header>
+
+  <section class="card surface-pad">
+    <div class="tabs">
+      <button [class.active]="tabActiva === 'entrada'" type="button" (click)="tabActiva = 'entrada'">Entrada</button>
+      <button [class.active]="tabActiva === 'salida'" type="button" (click)="tabActiva = 'salida'">Salida</button>
+      <button [class.active]="tabActiva === 'ajuste'" type="button" (click)="tabActiva = 'ajuste'">Ajuste</button>
+    </div>
+
+    @if (tabActiva === 'entrada') {
+      <div class="movement-layout">
+        <form class="form-grid">
+          <label>Producto
+            <select [(ngModel)]="productoEntrada" name="productoEntrada">
+              @for (producto of productos; track producto.id) {
+                <option [ngValue]="producto.id">{{ producto.nombre }} {{ producto.presentacion }}</option>
+              }
+            </select>
+          </label>
+          <label>Cantidad a ingresar
+            <input [(ngModel)]="cantidadEntrada" min="1" name="cantidadEntrada" type="number" />
+          </label>
+          <label>Proveedor
+            <select [(ngModel)]="proveedorEntrada" name="proveedorEntrada">
+              @for (proveedor of proveedores; track proveedor.id) {
+                <option [ngValue]="proveedor.id">{{ proveedor.nombre }}</option>
+              }
+            </select>
+          </label>
+          <label>Fecha
+            <input name="fechaEntrada" type="text" value="08/05/2026 09:30 a.m." />
+          </label>
+          <label>Motivo
+            <input name="motivoEntrada" type="text" value="Recepción de proveedor" />
+          </label>
+          <label>Observación
+            <textarea name="obsEntrada">Ingreso por reposición semanal.</textarea>
+          </label>
+          <button class="btn" type="button">Registrar entrada</button>
+        </form>
+
+        <aside class="preview-card">
+          <h3>Vista previa</h3>
+          <div><span>Stock actual</span><strong>{{ stockActual(productoEntrada) }}</strong></div>
+          <div><span>Cantidad a ingresar</span><strong>{{ cantidadEntrada }}</strong></div>
+          <div><span>Nuevo stock</span><strong>{{ nuevoStockEntrada() }}</strong></div>
+        </aside>
+      </div>
+    }
+
+    @if (tabActiva === 'salida') {
+      <div class="movement-layout">
+        <form class="form-grid">
+          <label>Producto
+            <select [(ngModel)]="productoSalida" name="productoSalida">
+              @for (producto of productos; track producto.id) {
+                <option [ngValue]="producto.id">{{ producto.nombre }} {{ producto.presentacion }}</option>
+              }
+            </select>
+          </label>
+          <label>Stock disponible
+            <input [value]="stockActual(productoSalida)" readonly type="number" />
+          </label>
+          <label>Cantidad a retirar
+            <input [(ngModel)]="cantidadSalida" min="1" name="cantidadSalida" type="number" />
+          </label>
+          <label>Responsable
+            <select [(ngModel)]="responsableSalida" name="responsableSalida">
+              @for (responsable of responsables; track responsable) {
+                <option [value]="responsable">{{ responsable }}</option>
+              }
+            </select>
+          </label>
+          <label>Fecha
+            <input name="fechaSalida" type="text" value="08/05/2026 09:15 a.m." />
+          </label>
+          <label>Motivo
+            <input name="motivoSalida" type="text" value="Venta" />
+          </label>
+          <label>Observación
+            <textarea name="obsSalida">Salida registrada en mostrador.</textarea>
+          </label>
+          @if (salidaInvalida()) {
+            <div class="alert-inline">No puedes retirar más unidades de las disponibles.</div>
+          }
+          <button class="btn" [disabled]="salidaInvalida()" type="button">Registrar salida</button>
+        </form>
+
+        <aside class="preview-card">
+          <h3>Vista previa</h3>
+          <div><span>Stock actual</span><strong>{{ stockActual(productoSalida) }}</strong></div>
+          <div><span>Cantidad a retirar</span><strong>{{ cantidadSalida }}</strong></div>
+          <div><span>Nuevo stock</span><strong>{{ nuevoStockSalida() }}</strong></div>
+        </aside>
+      </div>
+    }
+
+    @if (tabActiva === 'ajuste') {
+      <div class="movement-layout">
+        <form class="form-grid">
+          <label>Producto
+            <select [(ngModel)]="productoAjuste" name="productoAjuste">
+              @for (producto of productos; track producto.id) {
+                <option [ngValue]="producto.id">{{ producto.nombre }} {{ producto.presentacion }}</option>
+              }
+            </select>
+          </label>
+          <label>Tipo de ajuste
+            <select [(ngModel)]="tipoAjuste" name="tipoAjuste">
+              <option value="Aumentar stock">Aumentar stock</option>
+              <option value="Disminuir stock">Disminuir stock</option>
+            </select>
+          </label>
+          <label>Cantidad
+            <input [(ngModel)]="cantidadAjuste" min="1" name="cantidadAjuste" type="number" />
+          </label>
+          <label>Motivo
+            <input name="motivoAjuste" type="text" value="Revisión de conteo" />
+          </label>
+          <label>Responsable
+            <select [(ngModel)]="responsableAjuste" name="responsableAjuste">
+              @for (responsable of responsables; track responsable) {
+                <option [value]="responsable">{{ responsable }}</option>
+              }
+            </select>
+          </label>
+          <label>Observación
+            <textarea name="obsAjuste">Ajuste por diferencia detectada en estante.</textarea>
+          </label>
+          <button class="btn-soft" type="button">Registrar ajuste</button>
+        </form>
+
+        <aside class="preview-card">
+          <h3>Vista previa</h3>
+          <div><span>Stock actual</span><strong>{{ stockActual(productoAjuste) }}</strong></div>
+          <div><span>Ajuste</span><strong>{{ tipoAjuste }} {{ cantidadAjuste }}</strong></div>
+          <div><span>Nuevo stock</span><strong>{{ nuevoStockAjuste() }}</strong></div>
+        </aside>
+      </div>
+    }
+  </section>
+
+  <app-data-table titulo="Movimientos recientes">
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Producto</th>
+          <th>Tipo</th>
+          <th>Cantidad</th>
+          <th>Responsable</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (movimiento of movimientos; track movimiento.id) {
+          <tr>
+            <td>{{ movimiento.fecha }}</td>
+            <td>{{ movimiento.producto }}</td>
+            <td><app-status-badge [estado]="movimiento.tipo" /></td>
+            <td>{{ movimiento.cantidad }}</td>
+            <td>{{ movimiento.responsable }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </app-data-table>
+</section>

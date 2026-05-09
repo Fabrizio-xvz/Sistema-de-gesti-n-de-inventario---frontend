@@ -1,0 +1,86 @@
+<section class="page-shell">
+  <header class="page-header">
+    <div class="page-title">
+      <h1>Inventario</h1>
+      <p>Consulta el stock actual y detecta productos que necesitan reposición.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn" type="button">Registrar movimiento</button>
+      <button class="btn-outline" type="button">Ver productos críticos</button>
+    </div>
+  </header>
+
+  <section class="grid-auto">
+    <app-stat-card color="verde" icono="✓" numero="142" titulo="Productos disponibles" />
+    <app-stat-card color="amarillo" icono="△" numero="24" titulo="Stock bajo" />
+    <app-stat-card color="rojo" icono="!" numero="8" titulo="Agotados" />
+  </section>
+
+  <app-search-filter-bar>
+    <label>
+      Buscar producto
+      <input [(ngModel)]="busqueda" placeholder="Buscar producto..." type="text" />
+    </label>
+    <label>
+      Categoría
+      <select [(ngModel)]="categoria">
+        <option value="todas">Todas</option>
+        @for (item of categorias; track item) {
+          <option [value]="item">{{ item }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      Estado
+      <select [(ngModel)]="estado">
+        <option value="todos">Todos</option>
+        <option value="disponible">Disponible</option>
+        <option value="stock bajo">Stock bajo</option>
+        <option value="agotado">Agotado</option>
+      </select>
+    </label>
+    <label>
+      Ordenar por
+      <select [(ngModel)]="orden">
+        <option value="nombre">Nombre</option>
+        <option value="stock">Stock actual</option>
+        <option value="movimiento">Último movimiento</option>
+      </select>
+    </label>
+  </app-search-filter-bar>
+
+  <app-data-table titulo="Stock actual" subtitulo="Vista general del inventario de la tienda.">
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Stock actual</th>
+          <th>Stock mínimo</th>
+          <th>Estado</th>
+          <th>Último movimiento</th>
+          <th>Acción rápida</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (fila of filasFiltradas; track fila.productId) {
+          <tr [class.row-warning]="fila.estado === 'stock bajo'" [class.row-danger]="fila.estado === 'agotado'">
+            <td>
+              <strong>{{ fila.nombre }}</strong>
+              <div class="muted">{{ fila.presentacion }}</div>
+            </td>
+            <td>{{ fila.stockActual }}</td>
+            <td>{{ fila.stockMinimo }}</td>
+            <td><app-status-badge [estado]="fila.estado" /></td>
+            <td>{{ fila.ultimoMovimiento }}</td>
+            <td>
+              <div class="actions-inline">
+                <button class="table-link" type="button">Reponer</button>
+                <button class="table-link" type="button">Historial</button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </app-data-table>
+</section>

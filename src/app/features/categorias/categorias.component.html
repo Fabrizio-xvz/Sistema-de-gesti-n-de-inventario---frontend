@@ -1,0 +1,35 @@
+<section class="page-shell">
+  <header class="page-header">
+    <div class="page-title">
+      <h1>Categorías</h1>
+      <p>Organiza los productos de la tienda.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn" type="button">+ Nueva categoría</button>
+    </div>
+  </header>
+
+  <section class="card surface-pad">
+    <label class="category-search">
+      Buscar categoría
+      <input [(ngModel)]="busqueda" placeholder="Buscar categoría..." type="text" />
+    </label>
+  </section>
+
+  <section class="grid-auto">
+    @for (categoria of categoriasFiltradas; track categoria.id; let index = $index) {
+      <article class="category-card">
+        <div class="category-card__icon">{{ iconos[index % iconos.length] }}</div>
+        <div>
+          <h3>{{ categoria.nombre }}</h3>
+          <p>{{ categoria.cantidadProductos }} productos</p>
+        </div>
+        <app-status-badge [estado]="categoria.estado" />
+        <div class="category-card__actions">
+          <button class="table-link" type="button">Editar</button>
+          <button class="table-link muted" type="button">Desactivar</button>
+        </div>
+      </article>
+    }
+  </section>
+</section>

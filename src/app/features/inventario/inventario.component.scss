@@ -1,0 +1,21 @@
+.row-warning {
+  background: #fff9ef;
+}
+
+.row-danger {
+  background: #fff6f6;
+}
+
+.actions-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.table-link {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: var(--color-primary);
+  font-weight: 700;
+}

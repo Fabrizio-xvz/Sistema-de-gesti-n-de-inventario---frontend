@@ -1,0 +1,29 @@
+<section class="login">
+  <div class="login__card">
+    <div class="login__logo">🏪</div>
+    <h1>JUDO</h1>
+    <p>Sistema de inventario para tienda de abarrotes</p>
+
+    <form (ngSubmit)="ingresar()" class="login__form">
+      <label>
+        Correo
+        <input [(ngModel)]="correo" name="correo" placeholder="julia@judo.pe" type="email" />
+      </label>
+
+      <label>
+        Contraseña
+        <input [(ngModel)]="contrasena" name="contrasena" placeholder="Ingresa tu contraseña" type="password" />
+      </label>
+
+      <div class="login__row">
+        <label class="login__checkbox">
+          <input [(ngModel)]="recordar" name="recordar" type="checkbox" />
+          <span>Recordar sesión</span>
+        </label>
+        <a href="#">¿Olvidaste tu contraseña?</a>
+      </div>
+
+      <button class="btn" type="submit">Ingresar</button>
+    </form>
+  </div>
+</section>

@@ -1,0 +1,22 @@
+.table-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.table-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.45rem 1.45rem 0.35rem;
+}
+
+.table-card__header h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.table-card__header p {
+  margin: 0.35rem 0 0;
+  color: var(--color-text-soft);
+}

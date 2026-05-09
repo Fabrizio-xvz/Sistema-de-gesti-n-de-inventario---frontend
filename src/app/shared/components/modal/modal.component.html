@@ -1,0 +1,12 @@
+@if (abierto()) {
+  <div class="modal-backdrop" (click)="cerrado.emit()"></div>
+  <section class="modal">
+    <header class="modal__header">
+      <h3>{{ titulo() }}</h3>
+      <button type="button" (click)="cerrado.emit()">✕</button>
+    </header>
+    <div class="modal__body">
+      <ng-content />
+    </div>
+  </section>
+}

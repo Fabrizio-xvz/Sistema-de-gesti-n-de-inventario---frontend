@@ -1,0 +1,27 @@
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand__logo">🏪</div>
+    <div>
+      <strong>JUDO</strong>
+      <span>Gestión de Inventario</span>
+    </div>
+  </div>
+
+  <nav class="menu">
+    @for (item of items; track item.ruta) {
+      <a
+        [routerLink]="item.ruta"
+        routerLinkActive="menu__item--active"
+        class="menu__item"
+      >
+        <span class="menu__icon">{{ item.icono }}</span>
+        <span>{{ item.etiqueta }}</span>
+      </a>
+    }
+  </nav>
+
+  <a class="logout" routerLink="/login">
+    <span>⤴</span>
+    <span>Cerrar sesión</span>
+  </a>
+</aside>

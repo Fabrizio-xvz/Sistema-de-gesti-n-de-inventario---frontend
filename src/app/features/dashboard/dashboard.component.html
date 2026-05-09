@@ -1,0 +1,69 @@
+<section class="page-shell">
+  <header class="page-header">
+    <div class="page-title">
+      <h1>Bienvenida, Doña Julia 👋</h1>
+      <p>Este es el resumen de tu tienda hoy.</p>
+    </div>
+    <div class="header-actions">
+      <a class="btn" routerLink="/productos">+ Nuevo producto</a>
+    </div>
+  </header>
+
+  <section class="grid-auto">
+    <app-stat-card color="amarillo" icono="△" numero="12" titulo="Productos en stock bajo" />
+    <app-stat-card color="rojo" icono="!" numero="3" titulo="Productos agotados" />
+    <app-stat-card color="verde" icono="↓" numero="45" titulo="Entradas recientes" />
+    <app-stat-card color="azul" icono="↑" numero="128" titulo="Salidas recientes" />
+  </section>
+
+  <section class="split-layout">
+    <div class="page-shell">
+      <section class="card surface-pad">
+        <h2 class="section-title">Acciones rápidas</h2>
+        <div class="grid-auto">
+          <app-action-card icono="↓" ruta="/movimientos" titulo="Registrar Entrada" />
+          <app-action-card icono="↑" ruta="/movimientos" titulo="Registrar Salida" />
+          <app-action-card icono="+" ruta="/productos" titulo="Agregar Producto" />
+          <app-action-card icono="▦" ruta="/inventario" titulo="Ver Inventario" />
+        </div>
+      </section>
+
+      <section class="card surface-pad">
+        <h2 class="section-title">Actividad reciente</h2>
+        <div class="activity-list">
+          @for (item of actividad; track item.nombre + item.fecha) {
+            <article class="activity-item">
+              <div class="activity-item__dot"></div>
+              <div>
+                <strong>{{ item.nombre }} ({{ item.presentacion }})</strong>
+                <p>{{ item.descripcion }}</p>
+              </div>
+              <span>{{ item.fecha }}</span>
+            </article>
+          }
+        </div>
+      </section>
+    </div>
+
+    <aside class="card alert-card">
+      <div class="alert-card__top"></div>
+      <div class="surface-pad">
+        <h2>Stock crítico detectado</h2>
+        <p>Hay productos con quiebre o nivel mínimo que requieren atención inmediata.</p>
+
+        <div class="critical-list">
+          <article>
+            <strong>Azúcar Rubia (1kg)</strong>
+            <span>Quedan 0 unidades</span>
+          </article>
+          <article>
+            <strong>Huevos Pardos (Docena)</strong>
+            <span>Quedan 2 unidades</span>
+          </article>
+        </div>
+
+        <a class="btn-danger" routerLink="/reposiciones">Ver productos críticos</a>
+      </div>
+    </aside>
+  </section>
+</section>

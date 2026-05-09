@@ -1,0 +1,41 @@
+.actions-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.table-link {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+tr.selected {
+  background: #eef6ff;
+}
+
+.detail-panel {
+  align-self: start;
+  border-top: 4px solid #f59e0b;
+}
+
+.detail-stack {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.detail-stack div {
+  display: grid;
+  gap: 0.3rem;
+  padding: 1rem;
+  background: linear-gradient(180deg, #fffdf8 0%, #fffaf1 100%);
+  border: 1px solid #f7e7bf;
+  border-radius: 18px;
+}
+
+.detail-stack span {
+  color: var(--color-text-soft);
+  font-size: 0.86rem;
+}

@@ -1,0 +1,18 @@
+<header class="topbar">
+  <label class="search">
+    <span>⌕</span>
+    <input [(ngModel)]="busqueda" placeholder="Buscar producto..." type="text" />
+  </label>
+
+  <div class="topbar__meta">
+    <div class="topbar__date">{{ fechaActual }}</div>
+    <button class="icon-btn" type="button" aria-label="Notificaciones">🔔</button>
+    <div class="profile">
+      <div class="profile__info">
+        <strong>Doña Julia</strong>
+        <span>Administradora</span>
+      </div>
+      <div class="profile__avatar">DJ</div>
+    </div>
+  </div>
+</header>

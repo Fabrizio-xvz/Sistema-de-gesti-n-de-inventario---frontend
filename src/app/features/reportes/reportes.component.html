@@ -1,0 +1,115 @@
+<section class="page-shell">
+  <header class="page-header">
+    <div class="page-title">
+      <h1>Reportes</h1>
+      <p>Consulta y exporta información de tu tienda.</p>
+    </div>
+  </header>
+
+  <app-search-filter-bar>
+    <label>
+      Rango de fechas
+      <input [(ngModel)]="rango" type="text" />
+    </label>
+    <label>
+      Categoría
+      <select [(ngModel)]="categoria">
+        <option value="todas">Todas</option>
+        @for (item of categorias; track item) {
+          <option [value]="item">{{ item }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      Producto
+      <select [(ngModel)]="producto">
+        <option value="todos">Todos</option>
+        @for (item of productos; track item) {
+          <option [value]="item">{{ item }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      Tipo de movimiento
+      <select [(ngModel)]="tipo">
+        <option value="todos">Todos</option>
+        <option value="entrada">Entradas</option>
+        <option value="salida">Salidas</option>
+        <option value="ajuste">Ajustes</option>
+      </select>
+    </label>
+  </app-search-filter-bar>
+
+  <div class="toolbar-actions">
+    <button class="btn" type="button">Generar reporte</button>
+    <button class="btn-outline" type="button">Exportar PDF</button>
+    <button class="btn-outline" type="button">Exportar Excel</button>
+  </div>
+
+  <section class="grid-auto">
+    <app-stat-card color="verde" icono="↓" [numero]="resumen.totalEntradas.toString()" titulo="Total de entradas" />
+    <app-stat-card color="azul" icono="↑" [numero]="resumen.totalSalidas.toString()" titulo="Total de salidas" />
+    <app-stat-card color="amarillo" icono="△" [numero]="resumen.stockBajo.toString()" titulo="Stock bajo" />
+    <app-stat-card color="rojo" icono="!" [numero]="resumen.agotados.toString()" titulo="Agotados" />
+  </section>
+
+  <section class="grid-auto charts-grid">
+    <article class="card surface-pad">
+      <h2 class="section-title">Entradas vs salidas</h2>
+      <div class="bars-chart">
+        @for (barra of barras; track barra.nombre) {
+          <div class="bars-chart__group">
+            <div class="bars-chart__bars">
+              <span class="bar bar--entry" [style.height.%]="barra.entradas"></span>
+              <span class="bar bar--exit" [style.height.%]="barra.salidas"></span>
+            </div>
+            <strong>{{ barra.nombre }}</strong>
+          </div>
+        }
+      </div>
+    </article>
+
+    <article class="card surface-pad">
+      <h2 class="section-title">Productos por categoría</h2>
+      <div class="donut-layout">
+        <div class="donut" [style.background]="chartStyle()"></div>
+        <div class="legend">
+          @for (item of categoriasGrafico; track item.id; let index = $index) {
+            <div class="legend__item">
+              <span [class]="'legend__dot legend__dot--' + index"></span>
+              <strong>{{ item.nombre }}</strong>
+              <span>{{ item.cantidadProductos }} productos</span>
+            </div>
+          }
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <app-data-table titulo="Detalle de movimientos">
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Producto</th>
+          <th>Tipo</th>
+          <th>Cantidad</th>
+          <th>Responsable</th>
+          <th>Observación</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (movimiento of movimientos; track movimiento.id) {
+          <tr>
+            <td>{{ movimiento.fecha }}</td>
+            <td>{{ movimiento.producto }}</td>
+            <td><app-status-badge [estado]="movimiento.tipo" /></td>
+            <td>{{ movimiento.cantidad > 0 ? '+' : '' }}{{ movimiento.cantidad }}</td>
+            <td>{{ movimiento.responsable }}</td>
+            <td>{{ movimiento.observacion }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </app-data-table>
+</section>

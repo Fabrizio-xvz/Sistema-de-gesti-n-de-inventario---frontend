@@ -1,0 +1,137 @@
+.sidebar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  height: 100vh;
+  padding: 1.6rem 1rem 1rem;
+  background: #fff;
+  border-right: 1px solid rgba(215, 227, 240, 0.95);
+  backdrop-filter: blur(12px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.5rem 0.55rem;
+}
+
+.brand__logo {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--color-primary), #4f8df7);
+  color: #fff;
+  font-size: 1.4rem;
+}
+
+.brand strong,
+.brand span {
+  display: block;
+}
+
+.brand strong {
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+}
+
+.brand span {
+  margin-top: 0.2rem;
+  color: var(--color-text-soft);
+  font-size: 0.88rem;
+}
+
+.menu {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.menu__item,
+.logout {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.95rem 1rem;
+  border-radius: 20px;
+  color: #62748a;
+  font-weight: 700;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.menu__item:hover,
+.logout:hover {
+  background: #f3f8ff;
+  color: var(--color-primary);
+}
+
+.menu__item--active {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.2);
+}
+
+.menu__icon {
+  display: inline-flex;
+  justify-content: center;
+  width: 1.3rem;
+  opacity: 0.95;
+}
+
+.logout {
+  margin-top: auto;
+  border: 1px solid transparent;
+}
+
+.logout:hover {
+  border-color: var(--color-border-soft);
+}
+
+@media (max-width: 920px) {
+  .sidebar {
+    width: 88px;
+    min-width: 88px;
+    padding-inline: 0.8rem;
+  }
+
+  .brand strong,
+  .brand span,
+  .menu__item span:last-child,
+  .logout span:last-child {
+    display: none;
+  }
+
+  .menu__item,
+  .logout,
+  .brand {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 720px) {
+  .sidebar {
+    position: static;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid rgba(216, 226, 239, 0.9);
+  }
+
+  .menu {
+    overflow-x: auto;
+    flex-direction: row;
+  }
+
+  .menu__item,
+  .logout {
+    min-width: fit-content;
+  }
+}

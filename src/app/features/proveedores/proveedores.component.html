@@ -1,0 +1,103 @@
+<section class="page-shell">
+  <header class="page-header">
+    <div class="page-title">
+      <h1>Proveedores</h1>
+      <p>Administra los proveedores de la tienda.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn" type="button">+ Nuevo proveedor</button>
+    </div>
+  </header>
+
+  <app-search-filter-bar>
+    <label>
+      Buscar proveedor
+      <input [(ngModel)]="busqueda" placeholder="Buscar proveedor..." type="text" />
+    </label>
+    <label>
+      Categoría suministrada
+      <select [(ngModel)]="categoria">
+        <option value="todas">Todas</option>
+        @for (item of categorias; track item) {
+          <option [value]="item">{{ item }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      Estado
+      <select [(ngModel)]="estado">
+        <option value="todos">Todos</option>
+        <option value="activo">Activo</option>
+        <option value="inactivo">Inactivo</option>
+      </select>
+    </label>
+  </app-search-filter-bar>
+
+  <app-data-table titulo="Directorio de proveedores">
+    <table>
+      <thead>
+        <tr>
+          <th>Proveedor</th>
+          <th>Contacto</th>
+          <th>Teléfono</th>
+          <th>Categorías</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (proveedor of filasFiltradas; track proveedor.id) {
+          <tr>
+            <td><strong>{{ proveedor.nombre }}</strong></td>
+            <td>{{ proveedor.contacto }}</td>
+            <td>{{ proveedor.telefono }}</td>
+            <td>{{ categoriasTexto(proveedor) }}</td>
+            <td><app-status-badge [estado]="proveedor.estado" /></td>
+            <td>
+              <div class="actions-inline">
+                <button class="table-link" type="button" (click)="proveedorSeleccionado = proveedor">Ver detalle</button>
+                <button class="table-link" type="button">Editar</button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </app-data-table>
+</section>
+
+<app-drawer [abierto]="!!proveedorSeleccionado" [titulo]="'Detalle del proveedor'" (cerrado)="proveedorSeleccionado = null">
+  @if (proveedorSeleccionado; as proveedor) {
+    <section class="drawer-stack">
+      <div class="detail-card">
+        <strong>{{ proveedor.nombre }}</strong>
+        <app-status-badge estado="activo" />
+      </div>
+      <div class="detail-grid">
+        <div><span>Persona de contacto</span><strong>{{ proveedor.contacto }}</strong></div>
+        <div><span>Teléfono principal</span><strong>{{ proveedor.telefono }}</strong></div>
+        <div><span>Correo electrónico</span><strong>{{ proveedor.correo }}</strong></div>
+        <div><span>Última entrega</span><strong>{{ proveedor.ultimaEntrega }}</strong></div>
+      </div>
+      <div class="soft-divider"></div>
+      <div class="detail-card">
+        <span>Dirección</span>
+        <strong>{{ proveedor.direccion }}</strong>
+      </div>
+      <div class="detail-card">
+        <span>Categorías suministradas</span>
+        <strong>{{ categoriasTexto(proveedor) }}</strong>
+      </div>
+      <div class="soft-divider"></div>
+      <div class="detail-card">
+        <span>Notas internas</span>
+        <strong>{{ proveedor.notas }}</strong>
+      </div>
+      <div class="drawer-actions">
+        <button class="btn" type="button">Editar proveedor</button>
+        <button class="btn-outline" type="button">Ver productos asociados</button>
+        <button class="btn-soft" type="button">Registrar entrada</button>
+      </div>
+    </section>
+  }
+</app-drawer>

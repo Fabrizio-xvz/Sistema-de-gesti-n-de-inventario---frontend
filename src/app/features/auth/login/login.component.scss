@@ -1,0 +1,77 @@
+.login {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.16), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(15, 118, 110, 0.14), transparent 26%),
+    linear-gradient(180deg, #f7faff 0%, #edf4fb 100%);
+}
+
+.login__card {
+  width: min(460px, 100%);
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(216, 226, 239, 0.8);
+  border-radius: 30px;
+  box-shadow: var(--shadow-md);
+}
+
+.login__logo {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--color-primary), #4f8df7);
+  color: #fff;
+  font-size: 1.7rem;
+}
+
+.login h1 {
+  margin: 1.2rem 0 0.4rem;
+}
+
+.login p {
+  margin: 0;
+  color: var(--color-text-soft);
+}
+
+.login__form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.7rem;
+}
+
+.login__form label {
+  display: grid;
+  gap: 0.45rem;
+  font-weight: 600;
+}
+
+.login__form input[type='email'],
+.login__form input[type='password'] {
+  padding: 0.95rem 1rem;
+  background: #f8fbff;
+  border: 1px solid #dce6f3;
+  border-radius: 16px;
+}
+
+.login__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--color-text-soft);
+}
+
+.login__checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.login__row a {
+  color: var(--color-primary);
+}
