@@ -15,7 +15,7 @@
 
     @if (tabActiva === 'entrada') {
       <div class="movement-layout">
-        <form class="form-grid">
+        <form class="form-grid entrada-form">
           <label>Producto
             <select [(ngModel)]="productoEntrada" name="productoEntrada">
               @for (producto of productos; track producto.id) {
@@ -37,7 +37,7 @@
             <input name="fechaEntrada" type="text" value="08/05/2026 09:30 a.m." />
           </label>
           <label>Motivo
-            <input name="motivoEntrada" type="text" value="Recepción de proveedor" />
+            <textarea name="motivoEntrada">Recepción de proveedor</textarea>
           </label>
           <label>Observación
             <textarea name="obsEntrada">Ingreso por reposición semanal.</textarea>
