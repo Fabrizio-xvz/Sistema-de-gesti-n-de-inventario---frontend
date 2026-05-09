@@ -16,12 +16,12 @@
     <app-stat-card color="rojo" icono="!" numero="8" titulo="Agotados" />
   </section>
 
-  <app-search-filter-bar>
-    <label>
+  <app-search-filter-bar class="inventario-filtros">
+    <label class="filtro-item">
       Buscar producto
       <input [(ngModel)]="busqueda" placeholder="Buscar producto..." type="text" />
     </label>
-    <label>
+    <label class="filtro-item">
       Categoría
       <select [(ngModel)]="categoria">
         <option value="todas">Todas</option>
@@ -30,7 +30,7 @@
         }
       </select>
     </label>
-    <label>
+    <label class="filtro-item">
       Estado
       <select [(ngModel)]="estado">
         <option value="todos">Todos</option>
@@ -39,7 +39,7 @@
         <option value="agotado">Agotado</option>
       </select>
     </label>
-    <label>
+    <label class="filtro-item">
       Ordenar por
       <select [(ngModel)]="orden">
         <option value="nombre">Nombre</option>

@@ -1,3 +1,19 @@
+.inventario-filtros ::ng-deep .filter-bar {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  align-items: end;
+}
+
+.filtro-item {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.filtro-item input,
+.filtro-item select {
+  height: 48px;
+}
+
 .row-warning {
   background: #fff9ef;
 }
@@ -18,4 +34,10 @@
   border: 0;
   color: var(--color-primary);
   font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .inventario-filtros ::ng-deep .filter-bar {
+    grid-template-columns: 1fr !important;
+  }
 }
