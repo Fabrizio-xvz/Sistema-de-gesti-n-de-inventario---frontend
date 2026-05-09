@@ -56,7 +56,9 @@
   resize: vertical;
 }
 
-.entrada-form label {
+.entrada-form label,
+.salida-form label,
+.ajuste-form label {
   gap: 0.6rem;
   color: #49627d;
   font-size: 0.92rem;
@@ -64,7 +66,13 @@
 
 .entrada-form input,
 .entrada-form select,
-.entrada-form textarea {
+.entrada-form textarea,
+.salida-form input,
+.salida-form select,
+.salida-form textarea,
+.ajuste-form input,
+.ajuste-form select,
+.ajuste-form textarea {
   min-height: 56px;
   padding: 0.9rem 1.15rem;
   background: #eef2f6;
@@ -76,14 +84,91 @@
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92);
 }
 
-.entrada-form textarea {
+.entrada-form textarea,
+.salida-form textarea,
+.ajuste-form textarea {
   min-height: 124px;
 }
 
-.entrada-form .btn {
+.salida-form input[readonly] {
+  background: #e6edf7;
+  color: #35506f;
+}
+
+.salida-fecha {
+  grid-column: 1;
+  grid-row: 3;
+  align-self: start;
+}
+
+.salida-fecha input {
+  min-height: 56px;
+  height: 56px;
+}
+
+.salida-motivo {
+  grid-column: 1;
+  grid-row: 4;
+}
+
+.salida-observacion {
+  grid-column: 2;
+  grid-row: 4;
+}
+
+.ajuste-responsable {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.ajuste-motivo {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.ajuste-observacion {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.salida-alert {
+  grid-column: 1 / -1;
+  grid-row: 5;
+}
+
+.salida-submit-row {
+  grid-column: 1;
+  grid-row: 6;
+}
+
+.entrada-form .btn,
+.salida-form .btn {
   min-height: 56px;
   border-radius: 999px;
   font-size: 1.05rem;
+}
+
+.salida-submit {
+  width: 100%;
+  min-height: 56px;
+  border-radius: 999px;
+  font-size: 1.05rem;
+}
+
+.ajuste-submit {
+  width: 100%;
+  min-height: 56px;
+  border-radius: 999px;
+  font-size: 1.05rem;
+}
+
+.salida-submit:disabled {
+  opacity: 1;
+  background: var(--color-primary);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.22);
+  cursor: not-allowed;
 }
 
 .preview-card {
@@ -144,5 +229,17 @@
 @media (max-width: 720px) {
   .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .salida-fecha,
+  .salida-motivo,
+  .salida-observacion,
+  .salida-alert,
+  .salida-submit-row,
+  .ajuste-responsable,
+  .ajuste-motivo,
+  .ajuste-observacion {
+    grid-column: auto;
+    grid-row: auto;
   }
 }

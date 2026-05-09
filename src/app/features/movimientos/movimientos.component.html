@@ -1,4 +1,4 @@
-<section class="page-shell">
+﻿<section class="page-shell">
   <header class="page-header">
     <div class="page-title">
       <h1>Movimientos</h1>
@@ -56,7 +56,7 @@
 
     @if (tabActiva === 'salida') {
       <div class="movement-layout">
-        <form class="form-grid">
+        <form class="form-grid salida-form">
           <label>Producto
             <select [(ngModel)]="productoSalida" name="productoSalida">
               @for (producto of productos; track producto.id) {
@@ -77,20 +77,22 @@
               }
             </select>
           </label>
-          <label>Fecha
+          <label class="salida-fecha">Fecha
             <input name="fechaSalida" type="text" value="08/05/2026 09:15 a.m." />
           </label>
-          <label>Motivo
-            <input name="motivoSalida" type="text" value="Venta" />
+          <label class="salida-observacion">Observación
+              <textarea name="obsSalida">Salida registrada en mostrador.</textarea>
           </label>
-          <label>Observación
-            <textarea name="obsSalida">Salida registrada en mostrador.</textarea>
-          </label>
-          @if (salidaInvalida()) {
-            <div class="alert-inline">No puedes retirar más unidades de las disponibles.</div>
-          }
-          <button class="btn" [disabled]="salidaInvalida()" type="button">Registrar salida</button>
-        </form>
+            <label class="salida-motivo">Motivo
+              <textarea name="motivoSalida">Venta</textarea>
+            </label>
+            @if (salidaInvalida()) {
+              <div class="alert-inline salida-alert">No puedes retirar más unidades de las disponibles.</div>
+            }
+            <div class="salida-submit-row">
+              <button class="btn salida-submit" [disabled]="salidaInvalida()" type="button">Registrar salida</button>
+            </div>
+          </form>
 
         <aside class="preview-card">
           <h3>Vista previa</h3>
@@ -103,7 +105,7 @@
 
     @if (tabActiva === 'ajuste') {
       <div class="movement-layout">
-        <form class="form-grid">
+        <form class="form-grid ajuste-form">
           <label>Producto
             <select [(ngModel)]="productoAjuste" name="productoAjuste">
               @for (producto of productos; track producto.id) {
@@ -120,20 +122,20 @@
           <label>Cantidad
             <input [(ngModel)]="cantidadAjuste" min="1" name="cantidadAjuste" type="number" />
           </label>
-          <label>Motivo
-            <input name="motivoAjuste" type="text" value="Revisión de conteo" />
-          </label>
-          <label>Responsable
+          <label class="ajuste-responsable">Responsable
             <select [(ngModel)]="responsableAjuste" name="responsableAjuste">
               @for (responsable of responsables; track responsable) {
                 <option [value]="responsable">{{ responsable }}</option>
               }
             </select>
           </label>
-          <label>Observación
+          <label class="ajuste-motivo">Motivo
+            <textarea name="motivoAjuste">Revisión de conteo</textarea>
+          </label>
+          <label class="ajuste-observacion">Observación
             <textarea name="obsAjuste">Ajuste por diferencia detectada en estante.</textarea>
           </label>
-          <button class="btn-soft" type="button">Registrar ajuste</button>
+          <button class="btn ajuste-submit" type="button">Registrar ajuste</button>
         </form>
 
         <aside class="preview-card">
@@ -171,3 +173,10 @@
     </table>
   </app-data-table>
 </section>
+
+
+
+
+
+
+
