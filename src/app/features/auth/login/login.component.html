@@ -1,29 +1,92 @@
 <section class="login">
+  <div class="login__bg-blob login__bg-blob--1"></div>
+  <div class="login__bg-blob login__bg-blob--2"></div>
   <div class="login__card">
     <div class="login__logo">🏪</div>
     <h1>JUDO</h1>
     <p>Sistema de inventario para tienda de abarrotes</p>
 
-    <form (ngSubmit)="ingresar()" class="login__form">
+    @if (error()) {
+      <div class="login__error">
+         {{ error() }}
+      </div>
+    }
+
+    <form (ngSubmit)="loginForm.form.valid && ingresar()" #loginForm="ngForm" class="login__form" novalidate>
       <label>
         Correo
-        <input [(ngModel)]="correo" name="correo" placeholder="julia@judo.pe" type="email" />
+        <input 
+          [(ngModel)]="correo" 
+          (ngModelChange)="onInputChange()"
+          name="correo" 
+          placeholder="julia@judo.pe" 
+          type="email" 
+          required 
+          email 
+          [disabled]="cargando()" 
+          #correoModel="ngModel" />
+        @if (correoModel.invalid && (correoModel.dirty || correoModel.touched)) {
+          <span class="field-error">
+            @if (correoModel.errors?.['required']) { El correo es obligatorio. }
+            @if (correoModel.errors?.['email']) { Ingresa un formato de correo válido. }
+          </span>
+        }
       </label>
 
       <label>
         Contraseña
-        <input [(ngModel)]="contrasena" name="contrasena" placeholder="Ingresa tu contraseña" type="password" />
+        <div class="login__input-wrapper">
+          <input 
+            [(ngModel)]="contrasena" 
+            (ngModelChange)="onInputChange()"
+            name="contrasena" 
+            placeholder="Ingresa tu contraseña" 
+            [type]="mostrarContrasena() ? 'text' : 'password'" 
+            required 
+            minlength="6" 
+            [disabled]="cargando()" 
+            #contrasenaModel="ngModel" />
+          <button 
+            type="button" 
+            class="login__toggle-pwd" 
+            (click)="mostrarContrasena.set(!mostrarContrasena())"
+            tabindex="-1"
+            aria-label="Alternar visibilidad de contraseña">
+            @if (mostrarContrasena()) {
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12c1.389 4.108 5.29 7.125 9.803 7.125c1.963 0 3.8-.521 5.394-1.429L17 18M13.628 8.628A3 3 0 1 0 9.372 12.87M21 21L3 3m18 9c-1.389 4.108-5.29 7.125-9.803 7.125M17.657 16.657c1.389-1.286 2.505-2.825 3.28-4.657M12 4.5c4.638 0 8.573 3.007 9.963 7.178a10.457 10.457 0 0 1-1.047 2.457M12 4.5c-4.638 0-8.573 3.007-9.963 7.178a10.463 10.463 0 0 0 1.047 2.457" />
+              </svg>
+            } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+              </svg>
+            }
+          </button>
+        </div>
+        @if (contrasenaModel.invalid && (contrasenaModel.dirty || contrasenaModel.touched)) {
+          <span class="field-error">
+            @if (contrasenaModel.errors?.['required']) { La contraseña es obligatoria. }
+            @if (contrasenaModel.errors?.['minlength']) { La contraseña debe tener al menos 6 caracteres. }
+          </span>
+        }
       </label>
 
       <div class="login__row">
         <label class="login__checkbox">
-          <input [(ngModel)]="recordar" name="recordar" type="checkbox" />
+          <input [(ngModel)]="recordar" name="recordar" type="checkbox" [disabled]="cargando()" />
           <span>Recordar sesión</span>
         </label>
         <a href="#">¿Olvidaste tu contraseña?</a>
       </div>
 
-      <button class="btn" type="submit">Ingresar</button>
+      <button class="btn" type="submit" [disabled]="loginForm.form.invalid || cargando()">
+        @if (cargando()) {
+          Ingresando...
+        } @else {
+          Ingresar
+        }
+      </button>
     </form>
   </div>
 </section>
