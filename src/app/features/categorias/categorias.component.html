@@ -5,31 +5,46 @@
       <p>Organiza los productos de la tienda.</p>
     </div>
     <div class="header-actions">
-      <button class="btn" type="button">+ Nueva categoría</button>
+      <button class="btn" type="button" (click)="openNew()">+ Nueva categoría</button>
     </div>
   </header>
 
   <section class="card surface-pad">
     <label class="category-search">
       Buscar categoría
-      <input [(ngModel)]="busqueda" placeholder="Buscar categoría..." type="text" />
+      <input 
+        [ngModel]="busqueda()" 
+        (ngModelChange)="busqueda.set($event)" 
+        placeholder="Buscar categoría..." 
+        type="text" 
+      />
     </label>
   </section>
 
   <section class="grid-auto">
-    @for (categoria of categoriasFiltradas; track categoria.id; let index = $index) {
+    @for (categoria of categoriasFiltradas(); track categoria.id_categoria; let index = $index) {
       <article class="category-card">
         <div class="category-card__icon">{{ iconos[index % iconos.length] }}</div>
         <div>
-          <h3>{{ categoria.nombre }}</h3>
-          <p>{{ categoria.cantidadProductos }} productos</p>
+          <h3>{{ categoria.nombre_categoria }}</h3>
+          <p>{{ categoria.descripcion || 'Sin descripción' }}</p>
         </div>
-        <app-status-badge [estado]="categoria.estado" />
+        <app-status-badge [estado]="categoria.activo ? 'activo' : 'inactivo'" />
         <div class="category-card__actions">
-          <button class="table-link" type="button">Editar</button>
-          <button class="table-link muted" type="button">Desactivar</button>
+          <button class="table-link" type="button" (click)="openEdit(categoria)">Editar</button>
+          <button 
+            class="table-link muted" 
+            type="button" 
+            (click)="desactivarRapido(categoria)"
+            [disabled]="!categoria.activo"
+            [class.disabled]="!categoria.activo"
+          >
+            {{ categoria.activo ? 'Desactivar' : 'Inactivo' }}
+          </button>
         </div>
       </article>
     }
   </section>
+
+  <app-categoria-form-modal #modal (save)="onSave($event)"></app-categoria-form-modal>
 </section>
