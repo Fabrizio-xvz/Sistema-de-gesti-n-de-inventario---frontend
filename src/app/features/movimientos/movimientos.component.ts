@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { movimientos, productos, proveedores, responsables } from '../../core/data/mock-data';
 import { getInventarioByProductId, getProductoById, getProveedorById } from '../../core/data/mock-helpers';
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
@@ -15,7 +16,9 @@ type TipoAjuste = 'Aumentar stock' | 'Disminuir stock';
   templateUrl: './movimientos.component.html',
   styleUrl: './movimientos.component.scss',
 })
-export class MovimientosComponent {
+export class MovimientosComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+
   protected tabActiva: TabMovimiento = 'entrada';
   protected productoEntrada = 1;
   protected cantidadEntrada = 10;
@@ -30,13 +33,45 @@ export class MovimientosComponent {
   protected cantidadAjuste = 1;
   protected responsableAjuste = responsables[0];
 
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      const prodId = params['productoId'];
+      const action = params['accion'];
+      if (prodId) {
+        const idNum = Number(prodId);
+        this.productoEntrada = idNum;
+        this.productoSalida = idNum;
+        this.productoAjuste = idNum;
+        
+        if (action === 'historial') {
+          this.productoFiltrado.set(idNum);
+        } else {
+          this.productoFiltrado.set(null);
+          this.tabActiva = 'entrada';
+        }
+      } else {
+        this.productoFiltrado.set(null);
+      }
+    });
+  }
+
   protected readonly productos = productos;
   protected readonly proveedores = proveedores;
   protected readonly responsables = responsables;
-  protected readonly movimientos = movimientos.slice(0, 5).map((movimiento) => ({
-    ...movimiento,
-    producto: getProductoById(movimiento.productoId)?.nombre ?? 'Producto',
-  }));
+  
+  protected readonly productoFiltrado = signal<number | null>(null);
+
+  protected readonly movimientos = computed(() => {
+    let list = movimientos;
+    const filterId = this.productoFiltrado();
+    if (filterId !== null) {
+      list = list.filter(m => m.productoId === filterId);
+    }
+    return list.map((movimiento) => ({
+      ...movimiento,
+      producto: getProductoById(movimiento.productoId)?.nombre ?? 'Producto',
+    }));
+  });
 
   protected stockActual(productId: number): number {
     return getInventarioByProductId(productId)?.stockActual ?? 0;

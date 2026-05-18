@@ -5,15 +5,17 @@
       <p>Consulta el stock actual y detecta productos que necesitan reposición.</p>
     </div>
     <div class="header-actions">
-      <button class="btn" type="button">Registrar movimiento</button>
-      <button class="btn-outline" type="button">Ver productos críticos</button>
+      <button class="btn" type="button" (click)="registrarMovimiento()">Registrar movimiento</button>
+      <button [class.btn]="soloCriticos()" [class.btn-outline]="!soloCriticos()" type="button" (click)="toggleCriticos()">
+        {{ soloCriticos() ? 'Ver todo el stock' : 'Ver productos críticos' }}
+      </button>
     </div>
   </header>
 
   <section class="grid-auto">
-    <app-stat-card color="verde" icono="✓" numero="142" titulo="Productos disponibles" />
-    <app-stat-card color="amarillo" icono="△" numero="24" titulo="Stock bajo" />
-    <app-stat-card color="rojo" icono="!" numero="8" titulo="Agotados" />
+    <app-stat-card color="verde" icono="✓" [numero]="totalDisponibles().toString()" titulo="Productos disponibles" />
+    <app-stat-card color="amarillo" icono="△" [numero]="totalStockBajo().toString()" titulo="Stock bajo" />
+    <app-stat-card color="rojo" icono="!" [numero]="totalAgotados().toString()" titulo="Agotados" />
   </section>
 
   <app-search-filter-bar class="inventario-filtros">
@@ -25,14 +27,14 @@
       Categoría
       <select [(ngModel)]="categoria">
         <option value="todas">Todas</option>
-        @for (item of categorias; track item) {
+        @for (item of categoriasList(); track item) {
           <option [value]="item">{{ item }}</option>
         }
       </select>
     </label>
     <label class="filtro-item">
       Estado
-      <select [(ngModel)]="estado">
+      <select [(ngModel)]="estado" (change)="soloCriticos.set(false)">
         <option value="todos">Todos</option>
         <option value="disponible">Disponible</option>
         <option value="stock bajo">Stock bajo</option>
@@ -74,8 +76,9 @@
             <td>{{ fila.ultimoMovimiento }}</td>
             <td>
               <div class="actions-inline">
-                <button class="table-link" type="button">Reponer</button>
-                <button class="table-link" type="button">Historial</button>
+                <button class="table-link" type="button" (click)="movimientoRapido(fila.productId)" title="Ir a registrar movimiento de reposición">Reponer ➜</button>
+                <button class="table-link" type="button" (click)="historial(fila.productId)" title="Ver historial de transacciones de este producto">Historial</button>
+                <button class="table-link" type="button" (click)="openConfig(fila)">Configurar alertas</button>
               </div>
             </td>
           </tr>
@@ -84,3 +87,5 @@
     </table>
   </app-data-table>
 </section>
+
+<app-inventario-config-modal #configModal (save)="onSaveConfig($event)" />

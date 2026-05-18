@@ -1,4 +1,4 @@
-﻿<section class="page-shell">
+<section class="page-shell">
   <header class="page-header">
     <div class="page-title">
       <h1>Movimientos</h1>
@@ -148,6 +148,13 @@
     }
   </section>
 
+  @if (productoFiltrado()) {
+    <div class="filter-alert-banner" style="display: flex; justify-content: space-between; align-items: center; background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 12px 20px; border-radius: 12px; margin-bottom: 16px; font-weight: 600; font-size: 0.92rem; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.05);">
+      <span>🔍 Mostrando historial de movimientos filtrado para el producto seleccionado.</span>
+      <button type="button" (click)="productoFiltrado.set(null)" style="background: #2563eb; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">Ver todos los movimientos</button>
+    </div>
+  }
+
   <app-data-table titulo="Movimientos recientes">
     <table>
       <thead>
@@ -160,7 +167,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (movimiento of movimientos; track movimiento.id) {
+        @for (movimiento of movimientos(); track movimiento.id) {
           <tr>
             <td>{{ movimiento.fecha }}</td>
             <td>{{ movimiento.producto }}</td>

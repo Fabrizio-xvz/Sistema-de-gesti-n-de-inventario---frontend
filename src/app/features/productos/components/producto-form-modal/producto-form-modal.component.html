@@ -7,7 +7,7 @@
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="form-grid">
-        <!-- Nombre del Producto -->
+        
         <div class="form-group full-width">
           <label for="nombre_producto">Nombre del Producto <span class="required">*</span></label>
           <input
@@ -25,7 +25,7 @@
           }
         </div>
 
-        <!-- Categoría (Selector Dinámico) -->
+        
         <div class="form-group">
           <label for="id_categoria">Categoría <span class="required">*</span></label>
           <select
@@ -43,7 +43,7 @@
           }
         </div>
 
-        <!-- Presentación -->
+        
         <div class="form-group">
           <label for="presentacion">Presentación <span class="required">*</span></label>
           <input
@@ -58,7 +58,7 @@
           }
         </div>
 
-        <!-- Precio de Venta -->
+       
         <div class="form-group">
           <label for="precio_venta">Precio de Venta <span class="required">*</span></label>
           <div class="price-input-wrapper">
@@ -80,7 +80,7 @@
           }
         </div>
 
-        <!-- Proveedor (Selector Dinámico) -->
+        
         <div class="form-group">
           <label for="id_proveedor">Proveedor <span class="required">*</span></label>
           <select
@@ -98,14 +98,14 @@
           }
         </div>
 
-        <!-- Integración Logística Inicial (Opcional, sólo en Creación) -->
+       
         @if (!isEditMode()) {
           <div class="section-title full-width">
             <h3>Configuración Logística Inicial</h3>
             <p>Define los parámetros iniciales de almacenamiento. Se registrará un movimiento automático.</p>
           </div>
 
-          <!-- Stock Inicial -->
+        
           <div class="form-group">
             <label for="stock_inicial">Stock Inicial</label>
             <input
@@ -120,7 +120,7 @@
             }
           </div>
 
-          <!-- Stock Mínimo -->
+          
           <div class="form-group">
             <label for="stock_minimo">Stock Mínimo (Alerta)</label>
             <input
@@ -136,7 +136,7 @@
           </div>
         }
 
-        <!-- Notas -->
+        
         <div class="form-group full-width">
           <label for="notas">Notas / Observaciones</label>
           <textarea
@@ -147,7 +147,7 @@
           ></textarea>
         </div>
 
-        <!-- Estado Activo / Inactivo -->
+       
         <div class="form-group full-width checkbox-group">
           <label>
             <input type="checkbox" formControlName="activo" />
