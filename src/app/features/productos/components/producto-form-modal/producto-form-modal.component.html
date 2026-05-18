@@ -1,0 +1,167 @@
+<dialog #dialog class="modal">
+  <div class="modal-content">
+    <header class="modal-header">
+      <h2>{{ isEditMode() ? 'Editar Producto' : 'Nuevo Producto' }}</h2>
+      <button type="button" class="close-btn" (click)="close()">×</button>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <!-- Nombre del Producto -->
+        <div class="form-group full-width">
+          <label for="nombre_producto">Nombre del Producto <span class="required">*</span></label>
+          <input
+            id="nombre_producto"
+            type="text"
+            formControlName="nombre_producto"
+            placeholder="Ej: Aceite Primor 1L"
+            [class.invalid]="form.get('nombre_producto')?.invalid && form.get('nombre_producto')?.touched"
+          />
+          @if (form.get('nombre_producto')?.hasError('required') && form.get('nombre_producto')?.touched) {
+            <small class="error-msg">El nombre es requerido.</small>
+          }
+          @if (form.get('nombre_producto')?.hasError('minlength') && form.get('nombre_producto')?.touched) {
+            <small class="error-msg">Debe tener al menos 3 caracteres.</small>
+          }
+        </div>
+
+        <!-- Categoría (Selector Dinámico) -->
+        <div class="form-group">
+          <label for="id_categoria">Categoría <span class="required">*</span></label>
+          <select
+            id="id_categoria"
+            formControlName="id_categoria"
+            [class.invalid]="form.get('id_categoria')?.invalid && form.get('id_categoria')?.touched"
+          >
+            <option value="" disabled selected>Seleccione categoría...</option>
+            @for (cat of categorias(); track cat.id_categoria) {
+              <option [value]="cat.id_categoria">{{ cat.nombre_categoria }}</option>
+            }
+          </select>
+          @if (form.get('id_categoria')?.hasError('required') && form.get('id_categoria')?.touched) {
+            <small class="error-msg">Debe seleccionar una categoría.</small>
+          }
+        </div>
+
+        <!-- Presentación -->
+        <div class="form-group">
+          <label for="presentacion">Presentación <span class="required">*</span></label>
+          <input
+            id="presentacion"
+            type="text"
+            formControlName="presentacion"
+            placeholder="Ej: Botella 1L, Caja x 12"
+            [class.invalid]="form.get('presentacion')?.invalid && form.get('presentacion')?.touched"
+          />
+          @if (form.get('presentacion')?.hasError('required') && form.get('presentacion')?.touched) {
+            <small class="error-msg">La presentación es requerida.</small>
+          }
+        </div>
+
+        <!-- Precio de Venta -->
+        <div class="form-group">
+          <label for="precio_venta">Precio de Venta <span class="required">*</span></label>
+          <div class="price-input-wrapper">
+            <span class="currency-symbol">S/</span>
+            <input
+              id="precio_venta"
+              type="number"
+              step="0.01"
+              formControlName="precio_venta"
+              placeholder="0.00"
+              [class.invalid]="form.get('precio_venta')?.invalid && form.get('precio_venta')?.touched"
+            />
+          </div>
+          @if (form.get('precio_venta')?.hasError('required') && form.get('precio_venta')?.touched) {
+            <small class="error-msg">El precio es requerido.</small>
+          }
+          @if (form.get('precio_venta')?.hasError('min') && form.get('precio_venta')?.touched) {
+            <small class="error-msg">El precio debe ser mayor a 0.</small>
+          }
+        </div>
+
+        <!-- Proveedor (Selector Dinámico) -->
+        <div class="form-group">
+          <label for="id_proveedor">Proveedor <span class="required">*</span></label>
+          <select
+            id="id_proveedor"
+            formControlName="id_proveedor"
+            [class.invalid]="form.get('id_proveedor')?.invalid && form.get('id_proveedor')?.touched"
+          >
+            <option value="" disabled selected>Seleccione proveedor...</option>
+            @for (prov of proveedores(); track prov.id_proveedor) {
+              <option [value]="prov.id_proveedor">{{ prov.nombre_proveedor }}</option>
+            }
+          </select>
+          @if (form.get('id_proveedor')?.hasError('required') && form.get('id_proveedor')?.touched) {
+            <small class="error-msg">Debe seleccionar un proveedor.</small>
+          }
+        </div>
+
+        <!-- Integración Logística Inicial (Opcional, sólo en Creación) -->
+        @if (!isEditMode()) {
+          <div class="section-title full-width">
+            <h3>Configuración Logística Inicial</h3>
+            <p>Define los parámetros iniciales de almacenamiento. Se registrará un movimiento automático.</p>
+          </div>
+
+          <!-- Stock Inicial -->
+          <div class="form-group">
+            <label for="stock_inicial">Stock Inicial</label>
+            <input
+              id="stock_inicial"
+              type="number"
+              formControlName="stock_inicial"
+              placeholder="0"
+              [class.invalid]="form.get('stock_inicial')?.invalid && form.get('stock_inicial')?.touched"
+            />
+            @if (form.get('stock_inicial')?.hasError('min') && form.get('stock_inicial')?.touched) {
+              <small class="error-msg">No puede ser negativo.</small>
+            }
+          </div>
+
+          <!-- Stock Mínimo -->
+          <div class="form-group">
+            <label for="stock_minimo">Stock Mínimo (Alerta)</label>
+            <input
+              id="stock_minimo"
+              type="number"
+              formControlName="stock_minimo"
+              placeholder="0"
+              [class.invalid]="form.get('stock_minimo')?.invalid && form.get('stock_minimo')?.touched"
+            />
+            @if (form.get('stock_minimo')?.hasError('min') && form.get('stock_minimo')?.touched) {
+              <small class="error-msg">No puede ser negativo.</small>
+            }
+          </div>
+        }
+
+        <!-- Notas -->
+        <div class="form-group full-width">
+          <label for="notas">Notas / Observaciones</label>
+          <textarea
+            id="notas"
+            formControlName="notas"
+            placeholder="Comentarios sobre almacenamiento, manipulación o exhibición..."
+            rows="3"
+          ></textarea>
+        </div>
+
+        <!-- Estado Activo / Inactivo -->
+        <div class="form-group full-width checkbox-group">
+          <label>
+            <input type="checkbox" formControlName="activo" />
+            <span>Producto Activo (Visible en catálogos y ventas)</span>
+          </label>
+        </div>
+      </div>
+
+      <footer class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="close()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid || isSubmitting()">
+          {{ isSubmitting() ? 'Guardando...' : 'Guardar Producto' }}
+        </button>
+      </footer>
+    </form>
+  </div>
+</dialog>

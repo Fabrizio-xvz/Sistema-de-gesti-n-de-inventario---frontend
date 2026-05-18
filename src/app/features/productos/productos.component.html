@@ -5,7 +5,7 @@
       <p>Administra el catálogo de productos, precios, categorías y proveedores.</p>
     </div>
     <div class="header-actions">
-      <button class="btn" type="button">+ Nuevo producto</button>
+      <button class="btn" type="button" (click)="openNew()">+ Nuevo producto</button>
     </div>
   </header>
 
@@ -18,7 +18,7 @@
       Categoría
       <select [(ngModel)]="categoria">
         <option value="todas">Todas</option>
-        @for (item of categorias; track item) {
+        @for (item of categoriasList(); track item) {
           <option [value]="item">{{ item }}</option>
         }
       </select>
@@ -27,7 +27,7 @@
       Proveedor
       <select [(ngModel)]="proveedor">
         <option value="todos">Todos</option>
-        @for (item of listaProveedores; track item) {
+        @for (item of proveedoresList(); track item) {
           <option [value]="item">{{ item }}</option>
         }
       </select>
@@ -67,7 +67,7 @@
             <td>
               <div class="actions-inline">
                 <button class="table-link" type="button" (click)="abrirDetalle(producto)">Ver detalle</button>
-                <button class="table-link" type="button">Editar</button>
+                <button class="table-link" type="button" (click)="openEdit(producto)">Editar</button>
               </div>
             </td>
           </tr>
@@ -107,7 +107,9 @@
         </div>
       }
 
-      <button class="btn" type="button">Editar producto</button>
+      <button class="btn" type="button" (click)="openEdit(producto)">Editar producto</button>
     </section>
   }
 </app-drawer>
+
+<app-producto-form-modal #productoModal (save)="onSave($event)" />
