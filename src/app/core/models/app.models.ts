@@ -38,6 +38,7 @@ export interface InventoryItem {
   productId: number;
   stockActual: number;
   stockMinimo: number;
+  stockMaximo?: number;
   ultimoMovimiento: string;
 }
 
