@@ -1,0 +1,51 @@
+<dialog #dialog class="modal">
+  <div class="modal-content">
+    <header class="modal-header">
+      <h2>{{ isEditMode() ? 'Editar Categoría' : 'Nueva Categoría' }}</h2>
+      <button type="button" class="close-btn" (click)="close()">×</button>
+    </header>
+    
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="nombre_categoria">Nombre <span class="required">*</span></label>
+        <input 
+          id="nombre_categoria" 
+          type="text" 
+          formControlName="nombre_categoria" 
+          placeholder="Ej: Electrónicos"
+          [class.invalid]="form.get('nombre_categoria')?.invalid && form.get('nombre_categoria')?.touched"
+        />
+        @if (form.get('nombre_categoria')?.hasError('required') && form.get('nombre_categoria')?.touched) {
+          <small class="error-msg">El nombre es requerido.</small>
+        }
+        @if (form.get('nombre_categoria')?.hasError('minlength') && form.get('nombre_categoria')?.touched) {
+          <small class="error-msg">Debe tener al menos 3 caracteres.</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="descripcion">Descripción</label>
+        <textarea 
+          id="descripcion" 
+          formControlName="descripcion" 
+          placeholder="Descripción opcional"
+          rows="3"
+        ></textarea>
+      </div>
+
+      <div class="form-group checkbox-group">
+        <label>
+          <input type="checkbox" formControlName="activo" />
+          Activo
+        </label>
+      </div>
+
+      <footer class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="close()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid || isSubmitting()">
+          {{ isSubmitting() ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </footer>
+    </form>
+  </div>
+</dialog>
