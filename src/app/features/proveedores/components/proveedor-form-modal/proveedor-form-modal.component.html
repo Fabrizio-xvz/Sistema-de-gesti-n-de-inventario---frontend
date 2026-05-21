@@ -1,0 +1,71 @@
+<dialog #dialog class="modal">
+  <div class="modal-content">
+    <header class="modal-header">
+      <h2>{{ isEditMode() ? 'Editar Proveedor' : 'Nuevo Proveedor' }}</h2>
+      <button type="button" class="close-btn" (click)="close()">×</button>
+    </header>
+    
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="razon_social">Razón Social <span class="required">*</span></label>
+        <input 
+          id="razon_social" 
+          type="text" 
+          formControlName="razon_social" 
+          placeholder="Ej: Distribuidora Central S.A.C."
+          [class.invalid]="form.get('razon_social')?.invalid && form.get('razon_social')?.touched"
+        />
+        @if (form.get('razon_social')?.hasError('required') && form.get('razon_social')?.touched) {
+          <small class="error-msg">La razón social es requerida.</small>
+        }
+        @if (form.get('razon_social')?.hasError('minlength') && form.get('razon_social')?.touched) {
+          <small class="error-msg">Debe tener al menos 3 caracteres.</small>
+        }
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="ruc">RUC</label>
+          <input 
+            id="ruc" 
+            type="text" 
+            formControlName="ruc" 
+            placeholder="Ej: 20512345678"
+            maxlength="11"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="telefono">Teléfono</label>
+          <input 
+            id="telefono" 
+            type="text" 
+            formControlName="telefono" 
+            placeholder="Ej: 987 654 321"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="correo_electronico">Correo Electrónico</label>
+        <input 
+          id="correo_electronico" 
+          type="email" 
+          formControlName="correo_electronico" 
+          placeholder="Ej: contacto@empresa.pe"
+          [class.invalid]="form.get('correo_electronico')?.invalid && form.get('correo_electronico')?.touched"
+        />
+        @if (form.get('correo_electronico')?.hasError('email') && form.get('correo_electronico')?.touched) {
+          <small class="error-msg">Ingrese un correo electrónico válido.</small>
+        }
+      </div>
+
+      <footer class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="close()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid || isSubmitting()">
+          {{ isSubmitting() ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </footer>
+    </form>
+  </div>
+</dialog>

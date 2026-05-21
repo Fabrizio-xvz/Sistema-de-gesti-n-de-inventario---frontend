@@ -69,7 +69,7 @@ export class ProductosComponent implements OnInit {
     // Cargar proveedores para filtros
     this.proveedorService.getAll().subscribe({
       next: (data) => {
-        this.proveedoresList.set(data.filter(p => p.activo).map(p => p.nombre_proveedor));
+        this.proveedoresList.set(data.filter(p => p.estado === 'ACTIVO').map(p => p.razon_social));
       },
       error: (err) => console.error('Error al cargar proveedores para filtros', err)
     });
@@ -159,7 +159,7 @@ export class ProductosComponent implements OnInit {
       categoriaId: p.id_categoria,
       presentacion: p.presentacion,
       precioVenta: p.precio_venta,
-      proveedorId: p.id_proveedor,
+      proveedorId: p.id_proveedor ?? 0,
       estado: p.activo ? 'activo' : 'inactivo',
       notas: p.notas || ''
     };

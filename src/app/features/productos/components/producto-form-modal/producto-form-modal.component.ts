@@ -60,7 +60,7 @@ export class ProductoFormModalComponent implements OnInit {
 
     this.proveedorService.getAll().subscribe({
       next: (data) => {
-        this.proveedores.set(data.filter(p => p.activo));
+        this.proveedores.set(data.filter(p => p.estado === 'ACTIVO'));
       },
       error: (err) => console.error('Error al cargar proveedores en formulario de producto', err)
     });
@@ -112,13 +112,12 @@ export class ProductoFormModalComponent implements OnInit {
       this.isSubmitting.set(true);
       const formValue = this.form.getRawValue();
       const data: ProductoPayload = {
+        codigo_producto: formValue.nombre_producto.substring(0, 3).toUpperCase() + '-' + Date.now(),
         nombre_producto: formValue.nombre_producto,
+        descripcion: formValue.notas || null,
         id_categoria: Number(formValue.id_categoria),
-        presentacion: formValue.presentacion,
-        precio_venta: Number(formValue.precio_venta),
-        id_proveedor: Number(formValue.id_proveedor),
-        notas: formValue.notas,
-        activo: formValue.activo,
+        unidad_medida: formValue.presentacion,
+        costo_unitario_actual: Number(formValue.precio_venta),
         stock_inicial: this.isEditMode() ? undefined : Number(formValue.stock_inicial || 0),
         stock_minimo: this.isEditMode() ? undefined : Number(formValue.stock_minimo || 0)
       };

@@ -2,21 +2,21 @@
   <header class="page-header">
     <div class="page-title">
       <h1>Reportes</h1>
-      <p>Consulta y exporta información de tu tienda.</p>
+      <p>Consulta y exporta información de tu inventario.</p>
     </div>
   </header>
 
   <app-search-filter-bar class="reportes-filtros">
     <label class="filtro-item">
       Rango de fechas
-      <input [(ngModel)]="rango" type="text" />
+      <input [(ngModel)]="rango" type="text" disabled title="Filtro no disponible en la versión actual" />
     </label>
     <label class="filtro-item">
       Categoría
       <select [(ngModel)]="categoria">
         <option value="todas">Todas</option>
-        @for (item of categorias; track item) {
-          <option [value]="item">{{ item }}</option>
+        @for (item of categorias(); track item.id_categoria) {
+          <option [value]="item.nombre_categoria">{{ item.nombre_categoria }}</option>
         }
       </select>
     </label>
@@ -24,8 +24,8 @@
       Producto
       <select [(ngModel)]="producto">
         <option value="todos">Todos</option>
-        @for (item of productos; track item) {
-          <option [value]="item">{{ item }}</option>
+        @for (item of productos(); track item.id_producto) {
+          <option [value]="item.nombre_producto">{{ item.nombre_producto }}</option>
         }
       </select>
     </label>
@@ -42,51 +42,54 @@
 
   <div class="toolbar-actions">
     <button class="btn" type="button">Generar reporte</button>
-    <button class="btn-outline" type="button">Exportar PDF</button>
-    <button class="btn-outline" type="button">Exportar Excel</button>
+    <button class="btn-outline" type="button" (click)="exportarPdf()">Exportar PDF</button>
+    <button class="btn-outline" type="button" (click)="exportarExcel()">Exportar Excel</button>
   </div>
 
   <section class="grid-auto">
-    <app-stat-card color="verde" icono="↓" [numero]="resumen.totalEntradas.toString()" titulo="Total de entradas" />
-    <app-stat-card color="azul" icono="↑" [numero]="resumen.totalSalidas.toString()" titulo="Total de salidas" />
-    <app-stat-card color="amarillo" icono="△" [numero]="resumen.stockBajo.toString()" titulo="Stock bajo" />
-    <app-stat-card color="rojo" icono="!" [numero]="resumen.agotados.toString()" titulo="Agotados" />
+    <app-stat-card color="verde" icono="↓" [numero]="totalEntradas().toString()" titulo="Total de entradas" />
+    <app-stat-card color="azul" icono="↑" [numero]="totalSalidas().toString()" titulo="Total de salidas" />
+    <app-stat-card color="amarillo" icono="△" [numero]="stockBajo().toString()" titulo="Stock bajo" />
+    <app-stat-card color="rojo" icono="!" [numero]="agotados().toString()" titulo="Agotados" />
   </section>
 
   <section class="grid-auto charts-grid">
     <article class="card surface-pad">
-      <h2 class="section-title">Entradas vs salidas</h2>
-      <div class="bars-chart">
-        @for (barra of barras; track barra.nombre) {
-          <div class="bars-chart__group">
-            <div class="bars-chart__bars">
-              <span class="bar bar--entry" [style.height.%]="barra.entradas"></span>
-              <span class="bar bar--exit" [style.height.%]="barra.salidas"></span>
-            </div>
-            <strong>{{ barra.nombre }}</strong>
+      <h2 class="section-title">Valorización de Stock (Top 8)</h2>
+      <div class="chart-container" style="position: relative; height: 300px; width: 100%; margin-top: 20px;">
+        @if (valorizacionData.labels && valorizacionData.labels.length > 0) {
+          <canvas baseChart
+            [data]="valorizacionData"
+            [options]="barChartOptions"
+            [type]="'bar'">
+          </canvas>
+        } @else {
+          <div style="display: flex; height: 100%; align-items: center; justify-content: center; color: #94a3b8;">
+            No hay datos suficientes para graficar
           </div>
         }
       </div>
     </article>
 
     <article class="card surface-pad">
-      <h2 class="section-title">Productos por categoría</h2>
-      <div class="donut-layout">
-        <div class="donut" [style.background]="chartStyle()"></div>
-        <div class="legend">
-          @for (item of categoriasGrafico; track item.id; let index = $index) {
-            <div class="legend__item">
-              <span [class]="'legend__dot legend__dot--' + index"></span>
-              <strong>{{ item.nombre }}</strong>
-              <span>{{ item.cantidadProductos }} productos</span>
-            </div>
-          }
-        </div>
+      <h2 class="section-title">Rotación de Productos (Top 5 Salidas)</h2>
+      <div class="chart-container" style="position: relative; height: 300px; width: 100%; margin-top: 20px;">
+        @if (rotacionData.labels && rotacionData.labels.length > 0) {
+          <canvas baseChart
+            [data]="rotacionData"
+            [options]="pieChartOptions"
+            [type]="'doughnut'">
+          </canvas>
+        } @else {
+          <div style="display: flex; height: 100%; align-items: center; justify-content: center; color: #94a3b8;">
+            No hay datos suficientes para graficar
+          </div>
+        }
       </div>
     </article>
   </section>
 
-  <app-data-table titulo="Detalle de movimientos">
+  <app-data-table titulo="Detalle de movimientos recientes">
     <table>
       <thead>
         <tr>
@@ -94,23 +97,29 @@
           <th>Producto</th>
           <th>Tipo</th>
           <th>Cantidad</th>
-          <th>Responsable</th>
           <th>Observación</th>
         </tr>
       </thead>
       <tbody>
-        @for (movimiento of movimientos; track movimiento.id) {
+        @for (m of movimientosFiltrados; track m.id_movimiento) {
           <tr>
-            <td>{{ movimiento.fecha }}</td>
-            <td>{{ movimiento.producto }}</td>
-            <td><app-status-badge [estado]="movimiento.tipo" /></td>
-            <td>{{ movimiento.cantidad > 0 ? '+' : '' }}{{ movimiento.cantidad }}</td>
-            <td>{{ movimiento.responsable }}</td>
-            <td>{{ movimiento.observacion }}</td>
+            <td>{{ m.fecha_movimiento | date:'short' }}</td>
+            <td><strong>{{ m.producto }}</strong></td>
+            <td><app-status-badge [estado]="m.tipoDisplay" /></td>
+            <td>
+              <span [style.color]="(m.tipo_movimiento === 'SALIDA' || m.tipo_movimiento === 'AJUSTE_NEGATIVO') ? '#ef4444' : '#10b981'" style="font-weight: 700;">
+                {{ (m.tipo_movimiento === 'SALIDA' || m.tipo_movimiento === 'AJUSTE_NEGATIVO') ? '-' : '+' }}{{ m.cantidad }}
+              </span>
+            </td>
+            <td>{{ m.observacion ?? m.motivo ?? '—' }}</td>
+          </tr>
+        }
+        @if (movimientosFiltrados.length === 0) {
+          <tr>
+            <td colspan="5" style="text-align: center; color: #64748b; padding: 24px;">No hay movimientos registrados que coincidan.</td>
           </tr>
         }
       </tbody>
     </table>
   </app-data-table>
 </section>
-

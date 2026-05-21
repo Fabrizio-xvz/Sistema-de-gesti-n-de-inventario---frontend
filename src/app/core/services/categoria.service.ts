@@ -1,68 +1,80 @@
-import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
-import { delay } from 'rxjs/operators';
-import { Categoria, CategoriaPayload } from '../models/categoria.model';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, map, shareReplay, Subject, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { Categoria, CategoriaPayload, InactivarPayload } from '../models/categoria.model';
+
+interface ApiResponse<T> {
+  ok: boolean;
+  mensaje: string;
+  datos: T;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoriaService {
-  // Datos simulados (Maqueta)
-  private mockCategorias: Categoria[] = [
-    { id_categoria: 1, nombre_categoria: 'Electrónicos', descripcion: 'Dispositivos y gadgets', activo: true },
-    { id_categoria: 2, nombre_categoria: 'Ropa', descripcion: 'Prendas de vestir', activo: true },
-    { id_categoria: 3, nombre_categoria: 'Hogar', descripcion: 'Artículos para el hogar', activo: false },
-    { id_categoria: 4, nombre_categoria: 'Deportes', descripcion: 'Equipamiento deportivo', activo: true }
-  ];
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = `${environment.apiUrl}/categorias`;
 
-  private currentId = 5;
+  private cache$: Observable<Categoria[]> | null = null;
 
   getAll(): Observable<Categoria[]> {
-    // Simula retardo de red de 500ms
-    return of([...this.mockCategorias]).pipe(delay(500));
+    if (!this.cache$) {
+      this.cache$ = this.http.get<ApiResponse<any[]>>(this.apiUrl).pipe(
+        map(res => res.datos.map(c => this.mapToFrontend(c))),
+        shareReplay(1)
+      );
+    }
+    return this.cache$;
+  }
+
+  clearCache(): void {
+    this.cache$ = null;
   }
 
   getById(id: number): Observable<Categoria> {
-    const cat = this.mockCategorias.find(c => c.id_categoria === id);
-    if (cat) {
-      return of({...cat}).pipe(delay(300));
-    }
-    return throwError(() => new Error('Categoría no encontrada'));
+    return this.http.get<ApiResponse<any>>(`${this.apiUrl}/${id}`).pipe(
+      map(res => this.mapToFrontend(res.datos))
+    );
   }
 
   create(data: CategoriaPayload): Observable<Categoria> {
-    const newCat: Categoria = {
-      id_categoria: this.currentId++,
+    const payload = {
       nombre_categoria: data.nombre_categoria,
-      descripcion: data.descripcion,
-      activo: data.activo !== undefined ? data.activo : true
+      descripcion: data.descripcion ?? null
     };
-    this.mockCategorias.push(newCat);
-    return of({...newCat}).pipe(delay(600));
+    return this.http.post<ApiResponse<any>>(this.apiUrl, payload).pipe(
+      map(res => this.mapToFrontend(res.datos)),
+      tap(() => this.clearCache())
+    );
   }
 
   update(id: number, data: CategoriaPayload): Observable<Categoria> {
-    const index = this.mockCategorias.findIndex(c => c.id_categoria === id);
-    if (index > -1) {
-      const updatedCat: Categoria = {
-        ...this.mockCategorias[index],
-        nombre_categoria: data.nombre_categoria,
-        descripcion: data.descripcion !== undefined ? data.descripcion : this.mockCategorias[index].descripcion,
-        activo: data.activo !== undefined ? data.activo : this.mockCategorias[index].activo
-      };
-      this.mockCategorias[index] = updatedCat;
-      return of({...updatedCat}).pipe(delay(500));
-    }
-    return throwError(() => new Error('Categoría no encontrada'));
+    const payload = {
+      nombre_categoria: data.nombre_categoria,
+      descripcion: data.descripcion ?? null
+    };
+    return this.http.put<ApiResponse<any>>(`${this.apiUrl}/${id}`, payload).pipe(
+      map(res => this.mapToFrontend(res.datos)),
+      tap(() => this.clearCache())
+    );
   }
 
   inactivate(id: number, motivo: string = 'Desactivación manual'): Observable<Categoria> {
-    const index = this.mockCategorias.findIndex(c => c.id_categoria === id);
-    if (index > -1) {
-      this.mockCategorias[index].activo = false;
-      // Aquí se usaría el 'motivo' si la maqueta guardara el histórico
-      return of({...this.mockCategorias[index]}).pipe(delay(400));
-    }
-    return throwError(() => new Error('Categoría no encontrada'));
+    const payload: InactivarPayload = { motivo };
+    return this.http.patch<ApiResponse<any>>(`${this.apiUrl}/${id}/inactivar`, payload).pipe(
+      map(res => this.mapToFrontend(res.datos)),
+      tap(() => this.clearCache())
+    );
+  }
+
+  private mapToFrontend(c: any): Categoria {
+    return {
+      id_categoria: c.id_categoria,
+      nombre_categoria: c.nombre_categoria,
+      descripcion: c.descripcion,
+      activo: c.estado === 'ACTIVO'
+    };
   }
 }

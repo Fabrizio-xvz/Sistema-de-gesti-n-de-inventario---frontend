@@ -1,0 +1,67 @@
+<dialog #dialog class="modal">
+  <div class="modal-content">
+    <header class="modal-header">
+      <h2>Generar Pedido de Reposición</h2>
+      <button type="button" class="close-btn" (click)="close()">×</button>
+    </header>
+
+    @if (proveedorActual(); as prov) {
+      <div class="provider-info">
+        <strong>Proveedor:</strong> {{ prov.razon_social }} <br>
+        <small>RUC: {{ prov.ruc ?? 'N/A' }} | Correo: {{ prov.correo_electronico ?? 'N/A' }}</small>
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="codigo_reposicion">Código de Pedido <span class="required">*</span></label>
+          <input 
+            id="codigo_reposicion" 
+            type="text" 
+            formControlName="codigo_reposicion" 
+            [class.invalid]="form.get('codigo_reposicion')?.invalid && form.get('codigo_reposicion')?.touched"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Productos a Reponer</label>
+        <div class="products-list" formArrayName="detalles">
+          @for (detalle of detalles.controls; track i; let i = $index) {
+            <div class="product-item" [formGroupName]="i">
+              <div class="prod-name">
+                <input type="text" formControlName="nombre_producto" readonly />
+              </div>
+              <div class="prod-qty">
+                <label>Cant.</label>
+                <input type="number" formControlName="cantidad_solicitada" min="1" />
+              </div>
+              <div class="prod-cost">
+                <label>Costo S/</label>
+                <input type="number" step="0.01" formControlName="costo_unitario" min="0" />
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="observacion">Observaciones / Notas para el Proveedor</label>
+        <textarea 
+          id="observacion" 
+          formControlName="observacion" 
+          placeholder="Ej: Entrega urgente, por favor..."
+          rows="3"
+        ></textarea>
+      </div>
+
+      <footer class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="close()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid || isSubmitting()">
+          {{ isSubmitting() ? 'Generando...' : 'Confirmar Pedido' }}
+        </button>
+      </footer>
+    </form>
+  </div>
+</dialog>

@@ -1,107 +1,156 @@
 <section class="page-shell">
   <header class="page-header">
     <div class="page-title">
-      <h1>Reposiciones</h1>
-      <p>Productos que necesitan compra o reposición.</p>
+      <h1>Reposiciones y Compras</h1>
+      <p>Genera pedidos de productos con stock crítico y gestiona órdenes.</p>
     </div>
     <div class="header-actions">
-      <button class="btn" type="button">Registrar entrada</button>
-      <button class="btn-outline" type="button">Exportar lista</button>
+      <div class="tabs" style="display: inline-flex; gap: 0.5rem; padding: 0.45rem; background: #f0f5fb; border-radius: 999px;">
+        <button [class.active]="tabActiva === 'sugerencias'" (click)="tabActiva = 'sugerencias'" style="padding: 0.8rem 1.15rem; background: transparent; border: 0; border-radius: 999px; font-weight: 700; cursor: pointer;" [style.background]="tabActiva === 'sugerencias' ? '#fff' : 'transparent'" [style.color]="tabActiva === 'sugerencias' ? '#2563eb' : '#64748b'" [style.boxShadow]="tabActiva === 'sugerencias' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'">Sugerencias</button>
+        <button [class.active]="tabActiva === 'ordenes'" (click)="tabActiva = 'ordenes'" style="padding: 0.8rem 1.15rem; background: transparent; border: 0; border-radius: 999px; font-weight: 700; cursor: pointer;" [style.background]="tabActiva === 'ordenes' ? '#fff' : 'transparent'" [style.color]="tabActiva === 'ordenes' ? '#2563eb' : '#64748b'" [style.boxShadow]="tabActiva === 'ordenes' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'">Órdenes Creadas</button>
+      </div>
     </div>
   </header>
 
+
+
   <section class="grid-auto">
-    <app-stat-card color="azul" icono="↺" numero="32" titulo="Por reponer" />
-    <app-stat-card color="rojo" icono="!" numero="8" titulo="Urgentes" />
-    <app-stat-card color="verde" icono="☏" numero="12" titulo="Proveedores relacionados" />
-    <app-stat-card color="amarillo" icono="✓" numero="5" titulo="Revisados hoy" />
+    <app-stat-card color="azul" icono="↺" [numero]="stats.sugerenciasCount.toString()" titulo="Por reponer" />
+    <app-stat-card color="rojo" icono="!" [numero]="stats.urgentesCount.toString()" titulo="Agotados (Urgentes)" />
+    <app-stat-card color="amarillo" icono="⛟" [numero]="stats.enCamino.toString()" titulo="En Camino" />
+    <app-stat-card color="verde" icono="✓" [numero]="stats.completadasHoy.toString()" titulo="Recibidas" />
   </section>
 
-  <app-search-filter-bar class="reposiciones-filtros">
-    <label class="filtro-item">
-      Buscar producto
-      <input [(ngModel)]="busqueda" placeholder="Buscar producto..." type="text" />
-    </label>
-    <label class="filtro-item">
-      Prioridad
-      <select [(ngModel)]="prioridad">
-        <option value="todas">Todas</option>
-        <option value="urgente">Urgente</option>
-        <option value="pronto">Pronto</option>
-        <option value="planificado">Planificado</option>
-      </select>
-    </label>
-    <label class="filtro-item">
-      Proveedor
-      <select [(ngModel)]="proveedor">
-        <option value="todos">Todos</option>
-        @for (item of proveedores; track item) {
-          <option [value]="item">{{ item }}</option>
-        }
-      </select>
-    </label>
-    <label class="filtro-item">
-      Categoría
-      <select [(ngModel)]="categoria">
-        <option value="todas">Todas</option>
-        @for (item of categorias; track item) {
-          <option [value]="item">{{ item }}</option>
-        }
-      </select>
-    </label>
-  </app-search-filter-bar>
-
-  <section class="split-layout">
-    <app-data-table titulo="Lista de reposición">
-      <table>
-        <thead>
-          <tr>
-            <th>Producto</th>
-            <th>Stock actual</th>
-            <th>Stock mínimo</th>
-            <th>Cantidad sugerida</th>
-            <th>Proveedor</th>
-            <th>Prioridad</th>
-            <th>Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (item of itemsFiltrados; track item.productId) {
-            <tr [class.selected]="seleccionada?.productId === item.productId" (click)="seleccionada = item">
-              <td><strong>{{ productoNombre(item) }}</strong></td>
-              <td>{{ item.stockActual }}</td>
-              <td>{{ item.stockMinimo }}</td>
-              <td>{{ item.cantidadSugerida }}</td>
-              <td>{{ proveedorDetalle(item)?.nombre }}</td>
-              <td><app-status-badge [estado]="item.prioridad" /></td>
-              <td>
-                <div class="actions-inline">
-                  <button class="table-link" type="button">Registrar entrada</button>
-                  <button class="table-link" type="button">Marcar revisado</button>
-                </div>
-              </td>
-            </tr>
+  @if (tabActiva === 'sugerencias') {
+    <app-search-filter-bar class="reposiciones-filtros">
+      <label class="filtro-item">
+        Buscar producto
+        <input [(ngModel)]="busqueda" placeholder="Buscar producto..." type="text" />
+      </label>
+      <label class="filtro-item">
+        Proveedor
+        <select [(ngModel)]="proveedor">
+          <option value="todos">Todos</option>
+          @for (prov of proveedoresActivos; track prov.id_proveedor) {
+            <option [value]="prov.razon_social">{{ prov.razon_social }}</option>
           }
-        </tbody>
-      </table>
-    </app-data-table>
+        </select>
+      </label>
+    </app-search-filter-bar>
 
-    <aside class="card surface-pad detail-panel">
-      <h2 class="section-title">Detalle sugerido</h2>
-      @if (seleccionada; as item) {
-        <div class="detail-stack">
-          <div><span>Producto</span><strong>{{ productoNombre(item) }}</strong></div>
-          <div><span>Stock actual</span><strong>{{ item.stockActual }}</strong></div>
-          <div><span>Stock mínimo</span><strong>{{ item.stockMinimo }}</strong></div>
-          <div><span>Cantidad sugerida</span><strong>{{ item.cantidadSugerida }}</strong></div>
-          <div><span>Proveedor</span><strong>{{ proveedorDetalle(item)?.nombre }}</strong></div>
-          <div><span>Teléfono del proveedor</span><strong>{{ proveedorDetalle(item)?.telefono }}</strong></div>
-          <div><span>Última entrada</span><strong>{{ item.ultimaEntrada }}</strong></div>
-          <div><span>Nota</span><strong>{{ item.nota }}</strong></div>
-          <button class="btn" type="button">Registrar entrada</button>
-        </div>
-      }
-    </aside>
-  </section>
+    <section class="split-layout">
+      <app-data-table titulo="Sugerencias de Compra">
+        <table>
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Stock actual</th>
+              <th>Stock mínimo</th>
+              <th>Sugerido</th>
+              <th>Proveedor</th>
+              <th>Prioridad</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of sugerenciasFiltradas; track item.id_producto) {
+              <tr [class.selected]="seleccionadaSugerencia?.id_producto === item.id_producto" (click)="seleccionadaSugerencia = item">
+                <td><strong>{{ item.producto?.nombre_producto }}</strong></td>
+                <td>{{ item.stock_actual }}</td>
+                <td>{{ item.stock_minimo }}</td>
+                <td>{{ item.cantidad_sugerida }}</td>
+                <td>{{ item.proveedor?.razon_social ?? '—' }}</td>
+                <td><app-status-badge [estado]="item.prioridad" /></td>
+              </tr>
+            }
+            @if (sugerenciasFiltradas.length === 0) {
+              <tr>
+                <td colspan="6" style="text-align: center; color: #64748b; padding: 24px;">No hay productos con stock crítico para estos filtros.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </app-data-table>
+
+      <aside class="card surface-pad detail-panel">
+        <h2 class="section-title">Detalle de producto</h2>
+        @if (seleccionadaSugerencia; as item) {
+          <div class="detail-stack">
+            <div><span>Producto</span><strong>{{ item.producto?.nombre_producto }}</strong></div>
+            <div><span>Stock actual / Mínimo</span><strong>{{ item.stock_actual }} / {{ item.stock_minimo }}</strong></div>
+            <div><span>Sugerido (Max - Actual)</span><strong>{{ item.cantidad_sugerida }} unds.</strong></div>
+            <div><span>Proveedor</span><strong>{{ item.proveedor?.razon_social ?? 'No asignado' }}</strong></div>
+            
+            <button class="btn" type="button" [disabled]="!item.proveedor" (click)="generarPedido(item)">Generar Pedido (1)</button>
+            <button class="btn-secondary" type="button" [disabled]="!item.proveedor" (click)="generarPedidoAgrupado()" style="margin-top: -8px; padding: 12px; background: #e2e8f0; border-radius: 12px; border: none; font-weight: 600; cursor: pointer;">
+              Agrupar por Proveedor
+            </button>
+          </div>
+        } @else {
+          <p style="color: #64748b; text-align: center;">Selecciona una sugerencia para ver el detalle y generar el pedido.</p>
+        }
+      </aside>
+    </section>
+  }
+
+  @if (tabActiva === 'ordenes') {
+    <section class="split-layout">
+      <app-data-table titulo="Órdenes de Reposición">
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Fecha Solic.</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (orden of ordenesFiltradas; track orden.id_reposicion) {
+              <tr [class.selected]="seleccionadaOrden?.id_reposicion === orden.id_reposicion" (click)="seleccionadaOrden = orden; $event.stopPropagation()">
+                <td><strong>{{ orden.codigo_reposicion }}</strong></td>
+                <td>{{ orden.fecha_solicitud | date:'shortDate' }}</td>
+                <td><app-status-badge [estado]="statusDisplay(orden.estado_reposicion)" /></td>
+              </tr>
+            }
+            @if (ordenesFiltradas.length === 0) {
+              <tr>
+                <td colspan="3" style="text-align: center; color: #64748b; padding: 24px;">No hay órdenes de reposición registradas.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </app-data-table>
+
+      <aside class="card surface-pad detail-panel">
+        <h2 class="section-title">Detalle de la Orden</h2>
+        @if (seleccionadaOrden; as orden) {
+          <div class="detail-stack">
+            <div><span>Código</span><strong>{{ orden.codigo_reposicion }}</strong></div>
+            <div><span>Estado</span><strong style="text-transform: uppercase;">{{ orden.estado_reposicion }}</strong></div>
+            
+            <div style="background: transparent; border: none; padding: 0;">
+              <span>Acciones disponibles:</span>
+              <div style="display: flex; gap: 8px; flex-direction: column; margin-top: 8px;">
+                @if (orden.estado_reposicion === 'BORRADOR') {
+                  <button class="btn" type="button" (click)="solicitarOrden(orden)">Solicitar al Proveedor</button>
+                }
+                @if (orden.estado_reposicion === 'SOLICITADA') {
+                  <button class="btn" style="background: #10b981;" type="button" (click)="recibirOrden(orden)">Marcar como Recibida</button>
+                }
+                @if (orden.estado_reposicion === 'BORRADOR' || orden.estado_reposicion === 'SOLICITADA') {
+                  <button class="btn-outline" style="color: #ef4444; border-color: #ef4444;" type="button" (click)="anularOrden(orden)">Anular Orden</button>
+                }
+                @if (orden.estado_reposicion === 'RECIBIDA' || orden.estado_reposicion === 'ANULADA') {
+                  <span style="color: #64748b; font-size: 0.9rem;">Sin acciones adicionales.</span>
+                }
+              </div>
+            </div>
+          </div>
+        } @else {
+          <p style="color: #64748b; text-align: center;">Selecciona una orden para ver sus detalles y acciones.</p>
+        }
+      </aside>
+    </section>
+  }
+
+  <app-confirmacion-reposicion-modal #modalConfirmacion (save)="onConfirmarPedido($event)"></app-confirmacion-reposicion-modal>
 </section>
-

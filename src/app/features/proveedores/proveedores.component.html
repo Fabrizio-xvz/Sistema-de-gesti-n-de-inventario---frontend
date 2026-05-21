@@ -5,23 +5,14 @@
       <p>Administra los proveedores de la tienda.</p>
     </div>
     <div class="header-actions">
-      <button class="btn" type="button">+ Nuevo proveedor</button>
+      <button class="btn" type="button" (click)="openNew()">+ Nuevo proveedor</button>
     </div>
   </header>
 
   <app-search-filter-bar class="proveedores-filtros">
     <label class="filtro-item">
       Buscar proveedor
-      <input [(ngModel)]="busqueda" placeholder="Buscar proveedor..." type="text" />
-    </label>
-    <label class="filtro-item">
-      Categoría suministrada
-      <select [(ngModel)]="categoria">
-        <option value="todas">Todas</option>
-        @for (item of categorias; track item) {
-          <option [value]="item">{{ item }}</option>
-        }
-      </select>
+      <input [(ngModel)]="busqueda" placeholder="Buscar por nombre o RUC..." type="text" />
     </label>
     <label class="filtro-item">
       Estado
@@ -38,25 +29,25 @@
       <thead>
         <tr>
           <th>Proveedor</th>
-          <th>Contacto</th>
+          <th>RUC</th>
           <th>Teléfono</th>
-          <th>Categorías</th>
+          <th>Correo</th>
           <th>Estado</th>
           <th>Acción</th>
         </tr>
       </thead>
       <tbody>
-        @for (proveedor of filasFiltradas; track proveedor.id) {
+        @for (proveedor of filasFiltradas; track proveedor.id_proveedor) {
           <tr>
-            <td><strong>{{ proveedor.nombre }}</strong></td>
-            <td>{{ proveedor.contacto }}</td>
-            <td>{{ proveedor.telefono }}</td>
-            <td>{{ categoriasTexto(proveedor) }}</td>
-            <td><app-status-badge [estado]="proveedor.estado" /></td>
+            <td><strong>{{ proveedor.razon_social }}</strong></td>
+            <td>{{ proveedor.ruc ?? '—' }}</td>
+            <td>{{ proveedor.telefono ?? '—' }}</td>
+            <td>{{ proveedor.correo_electronico ?? '—' }}</td>
+            <td><app-status-badge [estado]="estadoDisplay(proveedor)" /></td>
             <td>
               <div class="actions-inline">
                 <button class="table-link" type="button" (click)="proveedorSeleccionado = proveedor">Ver detalle</button>
-                <button class="table-link" type="button">Editar</button>
+                <button class="table-link" type="button" (click)="openEdit(proveedor)">Editar</button>
               </div>
             </td>
           </tr>
@@ -70,35 +61,23 @@
   @if (proveedorSeleccionado; as proveedor) {
     <section class="drawer-stack">
       <div class="detail-card">
-        <strong>{{ proveedor.nombre }}</strong>
-        <app-status-badge estado="activo" />
+        <strong>{{ proveedor.razon_social }}</strong>
+        <app-status-badge [estado]="estadoDisplay(proveedor)" />
       </div>
       <div class="detail-grid">
-        <div><span>Persona de contacto</span><strong>{{ proveedor.contacto }}</strong></div>
-        <div><span>Teléfono principal</span><strong>{{ proveedor.telefono }}</strong></div>
-        <div><span>Correo electrónico</span><strong>{{ proveedor.correo }}</strong></div>
-        <div><span>Última entrega</span><strong>{{ proveedor.ultimaEntrega }}</strong></div>
+        <div><span>RUC</span><strong>{{ proveedor.ruc ?? '—' }}</strong></div>
+        <div><span>Teléfono principal</span><strong>{{ proveedor.telefono ?? '—' }}</strong></div>
+        <div><span>Correo electrónico</span><strong>{{ proveedor.correo_electronico ?? '—' }}</strong></div>
       </div>
       <div class="soft-divider"></div>
-      <div class="detail-card">
-        <span>Dirección</span>
-        <strong>{{ proveedor.direccion }}</strong>
-      </div>
-      <div class="detail-card">
-        <span>Categorías suministradas</span>
-        <strong>{{ categoriasTexto(proveedor) }}</strong>
-      </div>
-      <div class="soft-divider"></div>
-      <div class="detail-card">
-        <span>Notas internas</span>
-        <strong>{{ proveedor.notas }}</strong>
-      </div>
       <div class="drawer-actions">
-        <button class="btn" type="button">Editar proveedor</button>
-        <button class="btn-outline" type="button">Ver productos asociados</button>
-        <button class="btn-soft" type="button">Registrar entrada</button>
+        <button class="btn" type="button" (click)="openEdit(proveedor)">Editar proveedor</button>
+        @if (proveedor.estado === 'ACTIVO') {
+          <button class="btn-soft danger" type="button" (click)="desactivar(proveedor)">Desactivar proveedor</button>
+        }
       </div>
     </section>
   }
 </app-drawer>
 
+<app-proveedor-form-modal #proveedorModal (save)="onSave($event)" />

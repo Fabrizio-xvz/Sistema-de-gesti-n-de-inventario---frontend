@@ -9,6 +9,5 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './topbar.component.scss',
 })
 export class TopbarComponent {
-  protected busqueda = '';
   protected readonly fechaActual = '8 de Mayo, 2026';
 }

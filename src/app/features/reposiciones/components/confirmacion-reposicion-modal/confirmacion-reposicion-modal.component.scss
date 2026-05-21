@@ -1,0 +1,130 @@
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes backdropFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  border: none;
+  border-radius: 16px; 
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.2);
+  padding: 0;
+  max-width: 600px;
+  width: 90%;
+  background-color: #ffffff;
+  color: #1a1a1a;
+  
+  animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  
+  &::backdrop {
+    background-color: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(8px);
+    animation: backdropFadeIn 0.3s ease forwards;
+  }
+
+  .modal-content { padding: 32px; }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 16px;
+
+    h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .close-btn {
+      background: #f8fafc;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      color: #64748b;
+      &:hover { background: #e2e8f0; color: #0f172a; }
+    }
+  }
+
+  .provider-info {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    color: #1e40af;
+    
+    strong { color: #1e3a8a; }
+    small { display: block; margin-top: 4px; color: #3b82f6; }
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #334155;
+    }
+    input[type="text"], input[type="number"], textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #f8fafc;
+      font-family: inherit;
+    }
+    input[readonly] { background: #e2e8f0; color: #475569; }
+  }
+
+  .products-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 8px;
+
+    .product-item {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      background: #f1f5f9;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+
+      .prod-name { flex: 2; input { width: 100%; border: none; background: transparent; font-weight: 600;} }
+      .prod-qty { flex: 1; display: flex; align-items: center; gap: 8px; label { margin: 0; font-size: 0.85rem;} }
+      .prod-cost { flex: 1; display: flex; align-items: center; gap: 8px; label { margin: 0; font-size: 0.85rem;} }
+    }
+  }
+
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 20px;
+    
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-secondary { background: #f1f5f9; color: #475569; }
+    .btn-primary { background: #3b82f6; color: white; }
+  }
+}

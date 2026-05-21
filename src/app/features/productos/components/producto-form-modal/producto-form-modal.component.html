@@ -90,7 +90,7 @@
           >
             <option value="" disabled selected>Seleccione proveedor...</option>
             @for (prov of proveedores(); track prov.id_proveedor) {
-              <option [value]="prov.id_proveedor">{{ prov.nombre_proveedor }}</option>
+              <option [value]="prov.id_proveedor">{{ prov.razon_social }}</option>
             }
           </select>
           @if (form.get('id_proveedor')?.hasError('required') && form.get('id_proveedor')?.touched) {
